@@ -71,7 +71,7 @@ def run_LIF(pars, I_i):
         elif v[i] >= V_th:
             spikes.append(i)
             v[i] = V_rest
-            tr = tref/dt            # enter refractory time
+            tr = tref/dt            # entering refractory time
 
         dv = (-v[i] + R*I_i[i] + V_rest) * dt * (1/tau)
         v[i+1] = v[i] + dv
