@@ -15,11 +15,10 @@ def plot_voltage(pars, v, title):
     V_th = pars['V_th']
     T = pars['T']
     range_t = pars['range_t']
-    #v = [random.randint(-5, 5) for _ in range(len(range_t))]
     plt.plot(range_t, v)
     plt.xlabel('Time [ms]')
     plt.ylabel('V [mV]')
-    plt.axhline(V_th, ls='--', color='k')
+    plt.axhline(V_th, ls='--', color='red')
     plt.title('Membrane potential' + title)
     plt.show()
 
@@ -36,7 +35,7 @@ def default_params():
     params['R'] = 1 / 10                # nano oma      TODO: zasto 'nano' a ne 'mili' jedinica?
     params['V_init'] = -65
     params['V_rest'] = -65            # equilibrium point, [mV]
-    params['tref'] = 2                # refractory period, [ms]
+    params['tref'] = 5                # refractory period, [ms]
 
     params['T'] = 500                 # total duration of simulation
     params['dt'] = 0.1                # simulation time step
@@ -60,15 +59,14 @@ def run_LIF(pars, I_i):
     v[0] = V_rest
     spikes = []
     tr = 0          # count for refractory duration
-    #I_i = I_i * np.ones(len(range_t))      van funkcije davati
-    print(I_i)
+
     for i in range(len(range_t)-1):
 
         if tr>0:                # still in refractory period
             v[i] = V_rest
             tr = tr - 1
 
-        elif v[i] >= V_th:
+        elif v[i] > V_th:
             spikes.append(i)
             v[i] = V_rest
             tr = tref/dt            # entering refractory time
@@ -95,8 +93,9 @@ def plot_spikes(sp, range):
     for i in sp:
         spikes[i] = 1
     plt.plot(range, spikes)
-    plt.ylim(0, 1)
+    plt.ylim(0, 1.5)
     plt.title("Spikes")
+    plt.xlabel('Time [ms]')
     plt.show()
 
 
@@ -104,13 +103,13 @@ p = default_params()
 print(p)
 #plot_voltage(p, v=0)
 print(f"Duzina range t {len(p['range_t'])} ")
-I_const = 120 * np.ones(len(p['range_t']))
-I_delta = generate_delta(5000, p['range_t'])
-v, spikes_ms = run_LIF(p, I_const)
+I_const = 105 * np.ones(len(p['range_t']))
+I_delta = generate_delta(50000, p['range_t'])
+#v, spikes_ms = run_LIF(p, I_const)
 v2, spikes_ms2 = run_LIF(p, I_delta)
 plot_input(I_const, p['range_t'], "Constant input current")
-plot_voltage(p, v, ", constant input current")
-plot_spikes(spikes_ms, p['range_t'])
+#plot_voltage(p, v, ", constant input current")
+#plot_spikes(spikes_ms, p['range_t'])
 
 
 plot_input(I_delta, p['range_t'], "Delta input current")
