@@ -105,19 +105,21 @@ print(p)
 print(f"Duzina range t {len(p['range_t'])} ")
 I_const = 105 * np.ones(len(p['range_t']))
 I_delta = generate_delta(50000, p['range_t'])
-#v, spikes_ms = run_LIF(p, I_const)
+v, spikes_ms = run_LIF(p, I_const)
 v2, spikes_ms2 = run_LIF(p, I_delta)
 plot_input(I_const, p['range_t'], "Constant input current")
-#plot_voltage(p, v, ", constant input current")
-#plot_spikes(spikes_ms, p['range_t'])
+plot_voltage(p, v, ", constant input current")
+plot_spikes(spikes_ms, p['range_t'])
 
 
 plot_input(I_delta, p['range_t'], "Delta input current")
 plot_voltage(p, v2, ", delta input current")
-
-ms = [100, 300]
-print(f"Spikes at: {spikes_ms2}")
 plot_spikes(spikes_ms2, p['range_t'])
+
+dt = p['dt']
+spikes_ms2 = [item * dt for item in spikes_ms2]
+print(f"Spikes at: {spikes_ms2} ms")
+
 
 
 
