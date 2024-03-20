@@ -76,12 +76,21 @@ def run_LIF(pars, I_i):
         spikes_ms = np.array(spikes)*dt
     return v, spikes
 
+def run_disc_LIF():
+    pass
 
-def generate_delta(intensity, range):
-    I_delta = np.zeros(len(range))            # array of 0
-    rand_idex = random.randint(0, len(range) - 1)
-    I_delta[rand_idex] = intensity
+def generate_delta(no, range_t):
+    I_delta = np.zeros(len(range_t))            # array of 0
+    for i in range(0, no):
+        rand_idex = random.randint(0, len(range_t) - 1)
+        I_delta[rand_idex] = random.randint(5000, 50000)
+
     return I_delta
+
+# dve skale za grafike napraviti
+# napraviti diskretno, kao za digitalna kola
+# broj bitova parametar
+# library za diskretizaciju
 
 def plot_input(I, range, title):
     plt.plot(range, I)
@@ -104,7 +113,8 @@ print(p)
 #plot_voltage(p, v=0)
 print(f"Duzina range t {len(p['range_t'])} ")
 I_const = 105 * np.ones(len(p['range_t']))
-I_delta = generate_delta(50000, p['range_t'])
+no = 4
+I_delta = generate_delta(no, p['range_t'])
 v, spikes_ms = run_LIF(p, I_const)
 v2, spikes_ms2 = run_LIF(p, I_delta)
 plot_input(I_const, p['range_t'], "Constant input current")
