@@ -2,30 +2,14 @@ import random
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
-def plot_voltage(pars, v, title):
-    """
-
-    :param pars: parameter dictionary
-    :param v: voltage
-    :param sp: spike train
-    :return: figure of the membrane potential
-    """
-
-    V_th = pars['V_th']
-    T = pars['T']
-    range_t = pars['range_t']
-    plt.plot(range_t, v)
-    plt.xlabel('Time [ms]')
-    plt.ylabel('V [mV]')
-    plt.axhline(V_th, ls='--', color='red')
-    plt.title('Membrane potential' + title)
-    plt.show()
-
-
+import matplotlib.patches as mpatches
 
 
 def default_params():
+    """
+
+    :return: parameters of the model
+    """
     params = {}
 
     # neuron parameters
@@ -46,7 +30,7 @@ def default_params():
 
 def run_LIF(pars, I_i):
     """
-
+    "Continual" function that describes membrane voltage.
     :param pars: dictionary of parameters
     :param I_i: input current
     :return: voltage of the membrane
@@ -80,54 +64,117 @@ def run_disc_LIF():
     pass
 
 def generate_delta(no, range_t):
+    """
+    Generation of delta current input.
+    :param no: number of nonzero values
+    :param range_t: full time range
+    :return: delta impulse, array
+    """
     I_delta = np.zeros(len(range_t))            # array of 0
     for i in range(0, no):
         rand_idex = random.randint(0, len(range_t) - 1)
         I_delta[rand_idex] = random.randint(5000, 50000)
+    I_delta[110] = 5000
+    I_delta[130] = 5000
+    I_delta[150] = 5000
+    I_delta[170] = 5000
 
     return I_delta
 
-# dve skale za grafike napraviti
 # napraviti diskretno, kao za digitalna kola
 # broj bitova parametar
 # library za diskretizaciju
 
 def plot_input(I, range, title):
+    """
+    Plots input current.
+    :param I: input current
+    :param range: full time range
+    :param title:
+    :return: plot
+    """
     plt.plot(range, I)
     plt.title(title)
     plt.show()
 
+
+def plot_voltage(pars, v, title):
+    """
+
+    :param pars: parameter dictionary
+    :param v: voltage
+    :param sp: spike train
+    :return: figure of the membrane potential
+    """
+
+    fig, ax1 = plt.subplots()
+    ax1.set_xlabel('Time [ms]')
+    ax1.set_ylabel('V [mV]', color='blue')
+
+
+    V_th = pars['V_th']
+    T = pars['T']
+    range_t = pars['range_t']
+    ax1.plot(range_t, v, label='membrane_voltage', color='blue')
+    ax1.tick_params(axis='y')
+    ax1.axhline(V_th, ls='--', color='blue')
+    return ax1
+
 def plot_spikes(sp, range):
+    """
+
+    :param sp: array of spikes
+    :param range: time range
+    :return: figure of spikes
+    """
     spikes = np.zeros(len(range))
     for i in sp:
         spikes[i] = 1
-    plt.plot(range, spikes)
-    plt.ylim(0, 1.5)
-    plt.title("Spikes")
-    plt.xlabel('Time [ms]')
-    plt.show()
+
+
+    ax2 = plt.gca().twinx()
+    ax2.set_ylabel('Spikes', color='orange')
+    ax2.plot(range, spikes, label='spikes', color='orange')
+    ax2.tick_params(axis='y', labelcolor='orange')
+    ax2.set_yticks(np.arange(0, 1.5, 1))
+    return ax2
 
 
 p = default_params()
-print(p)
-#plot_voltage(p, v=0)
-print(f"Duzina range t {len(p['range_t'])} ")
 I_const = 105 * np.ones(len(p['range_t']))
-no = 4
-I_delta = generate_delta(no, p['range_t'])
+NO = 4
+I_delta = generate_delta(NO, p['range_t'])
+
 v, spikes_ms = run_LIF(p, I_const)
-v2, spikes_ms2 = run_LIF(p, I_delta)
 plot_input(I_const, p['range_t'], "Constant input current")
-plot_voltage(p, v, ", constant input current")
-plot_spikes(spikes_ms, p['range_t'])
+ax1 = plot_voltage(p, v, ", constant input current")
+ax2 = plot_spikes(spikes_ms, p['range_t'])
+plt.title("Constant input current")
+legend_patches = [
+    mpatches.Patch(color='tab:blue', label='membrane voltage'),
+    mpatches.Patch(color='tab:orange', label='spikes')
+]
+
+# Add legend with custom handles and labels
+plt.legend(handles=legend_patches)
+plt.show()
 
 
+v2, spikes_ms2 = run_LIF(p, I_delta)
 plot_input(I_delta, p['range_t'], "Delta input current")
-plot_voltage(p, v2, ", delta input current")
-plot_spikes(spikes_ms2, p['range_t'])
+ax1 = plot_voltage(p, v2, ", delta input current")
+ax2 = plot_spikes(spikes_ms2, p['range_t'])
+plt.title("Delta input current")
+legend_patches = [
+    mpatches.Patch(color='tab:blue', label='membrane voltage'),
+    mpatches.Patch(color='tab:orange', label='spikes')
+]
 
-dt = p['dt']
-spikes_ms2 = [item * dt for item in spikes_ms2]
+# Add legend with custom handles and labels
+plt.legend(handles=legend_patches)
+plt.show()
+
+spikes_ms2 = [item * p['dt'] for item in spikes_ms2]
 print(f"Spikes at: {spikes_ms2} ms")
 
 
