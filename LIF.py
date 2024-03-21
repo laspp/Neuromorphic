@@ -43,16 +43,22 @@ def run_LIF(pars, I_i):
     v[0] = V_rest
     spikes = []
     tr = 0          # count for refractory duration
+    flag_th = False
 
     for i in range(len(range_t)-1):
+        if flag_th:
+            v[i] = V_rest
+            flag_th = False
 
         if tr>0:                # still in refractory period
             v[i] = V_rest
             tr = tr - 1
 
         elif v[i] > V_th:
+            flag_th = True
             spikes.append(i)
-            v[i] = V_rest
+            v[i] = V_th
+            #v[i] = V_rest
             tr = tref/dt            # entering refractory time
 
         dv = (-v[i] + R*I_i[i] + V_rest) * dt * (1/tau)
@@ -73,11 +79,13 @@ def generate_delta(no, range_t):
     I_delta = np.zeros(len(range_t))            # array of 0
     for i in range(0, no):
         rand_idex = random.randint(0, len(range_t) - 1)
-        I_delta[rand_idex] = random.randint(5000, 50000)
-    I_delta[110] = 5000
-    I_delta[130] = 5000
+        I_delta[rand_idex] = random.randint(2000, 50000)
+
+    I_delta[100] = 5000
     I_delta[150] = 5000
-    I_delta[170] = 5000
+    I_delta[200] = 5000
+    I_delta[250] = 5000
+    I_delta[2000] = 5000
 
     return I_delta
 
@@ -85,7 +93,7 @@ def generate_delta(no, range_t):
 # broj bitova parametar
 # library za diskretizaciju
 
-def plot_input(I, range, title):
+def plot_input(ax, I, range):
     """
     Plots input current.
     :param I: input current
@@ -93,12 +101,18 @@ def plot_input(I, range, title):
     :param title:
     :return: plot
     """
-    plt.plot(range, I)
-    plt.title(title)
-    plt.show()
+    ax.set_ylabel('I')
+    ax.plot(range, I, label='I', color='green')
+    ax.tick_params(axis='y')
+    ax.set_title('Input current')
+    return ax
+
+    # plt.plot(range, I)
+    # plt.title(title)
+    # plt.show()
 
 
-def plot_voltage(pars, v, title):
+def plot_voltage(ax, pars, v):
     """
 
     :param pars: parameter dictionary
@@ -107,20 +121,16 @@ def plot_voltage(pars, v, title):
     :return: figure of the membrane potential
     """
 
-    fig, ax1 = plt.subplots()
-    ax1.set_xlabel('Time [ms]')
-    ax1.set_ylabel('V [mV]', color='blue')
-
-
+    ax.set_ylabel('V [mV]', color='blue')
     V_th = pars['V_th']
-    T = pars['T']
     range_t = pars['range_t']
-    ax1.plot(range_t, v, label='membrane_voltage', color='blue')
-    ax1.tick_params(axis='y')
-    ax1.axhline(V_th, ls='--', color='blue')
-    return ax1
+    ax.plot(range_t, v, label='membrane_voltage', color='blue')
+    ax.tick_params(axis='y')
+    ax.axhline(V_th, ls='--', color='blue')
+    ax.set_title("Membrane voltage")
+    return ax
 
-def plot_spikes(sp, range):
+def plot_spikes(ax, sp, range):
     """
 
     :param sp: array of spikes
@@ -131,13 +141,13 @@ def plot_spikes(sp, range):
     for i in sp:
         spikes[i] = 1
 
-
-    ax2 = plt.gca().twinx()
-    ax2.set_ylabel('Spikes', color='orange')
-    ax2.plot(range, spikes, label='spikes', color='orange')
-    ax2.tick_params(axis='y', labelcolor='orange')
-    ax2.set_yticks(np.arange(0, 1.5, 1))
-    return ax2
+    ax.set_xlabel('Time [ms]')
+    ax.set_ylabel('Spikes', color='orange')
+    ax.plot(range, spikes, label='spikes', color='orange')
+    ax.tick_params(axis='y', labelcolor='orange')
+    ax.set_yticks(np.arange(0, 1.5, 1))
+    ax.set_title('Spikes')
+    return ax
 
 
 p = default_params()
@@ -146,33 +156,20 @@ NO = 4
 I_delta = generate_delta(NO, p['range_t'])
 
 v, spikes_ms = run_LIF(p, I_const)
-plot_input(I_const, p['range_t'], "Constant input current")
-ax1 = plot_voltage(p, v, ", constant input current")
-ax2 = plot_spikes(spikes_ms, p['range_t'])
-plt.title("Constant input current")
-legend_patches = [
-    mpatches.Patch(color='tab:blue', label='membrane voltage'),
-    mpatches.Patch(color='tab:orange', label='spikes')
-]
+fig, axs = plt.subplots(3, sharex=True, sharey=False)
+plot_input(axs[0], I_const, p['range_t'])
+plot_voltage(axs[1], p, v)
+ax2 = plot_spikes(axs[2], spikes_ms, p['range_t'])
 
-# Add legend with custom handles and labels
-plt.legend(handles=legend_patches)
 plt.show()
-
 
 v2, spikes_ms2 = run_LIF(p, I_delta)
-plot_input(I_delta, p['range_t'], "Delta input current")
-ax1 = plot_voltage(p, v2, ", delta input current")
-ax2 = plot_spikes(spikes_ms2, p['range_t'])
-plt.title("Delta input current")
-legend_patches = [
-    mpatches.Patch(color='tab:blue', label='membrane voltage'),
-    mpatches.Patch(color='tab:orange', label='spikes')
-]
-
-# Add legend with custom handles and labels
-plt.legend(handles=legend_patches)
+fig, axs = plt.subplots(3, sharex=True, sharey=False)
+plot_input(axs[0], I_delta, p['range_t'])
+plot_voltage(axs[1], p, v2)
+ax2 = plot_spikes(axs[2], spikes_ms2, p['range_t'])
 plt.show()
+
 
 spikes_ms2 = [item * p['dt'] for item in spikes_ms2]
 print(f"Spikes at: {spikes_ms2} ms")
