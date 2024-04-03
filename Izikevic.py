@@ -19,7 +19,7 @@ def default_params():
     params['d'] = 8                 # after spike reset of the recovery variable u
 
     params['T'] = 500                 # total duration of simulation
-    params['dt'] = 0.5                # simulation time step
+    params['dt'] = 0.1                # simulation time step
     params['range_t'] = np.arange(0, params['T'], params['dt'])          # discrete simulation time
 
     return params
@@ -36,6 +36,7 @@ def run_Izikevic(pars, I_i):
     v = [c for _ in range(len(range_t))]
     spikes = []
     u = [b*v[j] for j in v]
+    #u = [0 for j in v]
 
     for i in range(len(range_t)-1):
 
@@ -44,14 +45,19 @@ def run_Izikevic(pars, I_i):
         du = a*(b*v[i]-u[i])*dt
         u[i+1] = u[i] + du
         spikes_ms = np.array(spikes)*dt
-        if v[i]>=30:                            # TODO: v[i] ili v[i+1]
-            v[i] = c
-            u[i] = u[i] + d
+        if v[i+1]>=30:
+            v[i+1] = c
+            u[i+1] = u[i+1] + d
             # ovde zabeleziti spajk
+            spikes.append(i)
+            print("Spike!")
     return v, spikes
 
+def generate_const_I(intensity):
+    I_const = intensity * np.ones(len(p['range_t']))
+    return I_const
 
-def generate_delta(no, range_t):
+def generate_r_delta(no, range_t, max_intensity):
     """
     Generation of delta current input.
     :param no: number of nonzero values
@@ -61,19 +67,53 @@ def generate_delta(no, range_t):
     I_delta = np.zeros(len(range_t))            # array of 0
     for i in range(0, no):
         rand_idex = random.randint(0, len(range_t) - 1)
-        I_delta[rand_idex] = random.randint(1, 50)
+        I_delta[rand_idex] = random.randint(1, max_intensity)
 
-    I_delta[10] = 50
-    I_delta[15] = 50
-    I_delta[20] = 50
-    I_delta[25] = 50
-    I_delta[800] = 50
+    I_delta[10] = 18
+    I_delta[11] = 18
+    I_delta[12] = 18
+    I_delta[13] = 18
+
+
+    I_delta[15] = 18
+    I_delta[16] = 18
+    I_delta[17] = 18
+    I_delta[18] = 18
+
+
+    I_delta[20] = 18
+    I_delta[21] = 18
+    I_delta[22] = 18
+    I_delta[23] = 18
+
+    I_delta[25] = 18
+    I_delta[26] = 18
+    I_delta[27] = 18
+    I_delta[28] = 18
+
+
+    #I_delta[800] = 50
 
     return I_delta
 
-# napraviti diskretno, kao za digitalna kola
-# broj bitova parametar
-# library za diskretizaciju
+def generate_eqv_delta(no, range_t, intensity):
+    I_delta = np.zeros(len(range_t))
+    # ako ima 5000 na 5 to je na svakih 1000
+    delovi = int(len(range_t)/no)
+    for i in range(0, no):
+        I_delta[i*delovi] = intensity
+    I_delta[0] = 0
+    return I_delta
+
+def generate_heviside(no, range_t, duration, intensity):
+    I_heviside = np.zeros(len(range_t))
+    delovi = int(len(range_t)/no)
+    for i in range(no):
+        for j in range(duration):
+            I_heviside[i*delovi + j] = intensity
+    I_heviside[0] = 0
+    return I_heviside
+
 
 def plot_input(ax, I, range):
     """
@@ -83,10 +123,11 @@ def plot_input(ax, I, range):
     :param title:
     :return: plot
     """
-    ax.set_ylabel('I')
+    ax.set_ylabel('I [mA]')
     ax.plot(range, I, label='I', color='green')
     ax.tick_params(axis='y')
     ax.set_title('Input current')
+    ax.set_ylim(bottom=-0.01)
     return ax
 
     # plt.plot(range, I)
@@ -131,9 +172,16 @@ def plot_spikes(ax, sp, range):
 
 
 p = default_params()
-I_const = 1 * np.ones(len(p['range_t']))
-NO = 4
-I_delta = generate_delta(NO, p['range_t'])
+NO = 8
+intensity_const = 0
+intensity_delta = 20
+intensity_eqv = 20
+intensity_heviside = 20
+heviside_duration = 20          #[ms]
+I_const = generate_const_I(intensity_const)
+I_delta = generate_r_delta(NO, p['range_t'], intensity_delta)
+I_eqv = generate_eqv_delta(NO, p['range_t'], intensity_eqv)
+I_heviside = generate_heviside(NO, p['range_t'], heviside_duration, intensity_heviside)
 
 v, spikes_ms = run_Izikevic(p, I_const)
 fig, axs = plt.subplots(3, sharex=True, sharey=False)
@@ -143,16 +191,31 @@ ax2 = plot_spikes(axs[2], spikes_ms, p['range_t'])
 
 plt.show()
 
-v2, spikes_ms2 = run_Izikevic(p, I_delta)
+v2, spikes2 = run_Izikevic(p, I_delta)
 fig, axs = plt.subplots(3, sharex=True, sharey=False)
 plot_input(axs[0], I_delta, p['range_t'])
 plot_voltage(axs[1], p, v2)
-ax2 = plot_spikes(axs[2], spikes_ms2, p['range_t'])
+ax2 = plot_spikes(axs[2], spikes2, p['range_t'])
+plt.show()
+
+print(f"Spikes {spikes2}")
+spikes_ms2 = [item * p['dt'] for item in spikes2]
+print(f"Spikes at: {spikes_ms2} ms")
+
+v3, spikes3 = run_Izikevic(p, I_eqv)
+fig, axs = plt.subplots(3, sharex=True, sharey=False)
+plot_input(axs[0], I_eqv, p['range_t'])
+plot_voltage(axs[1], p, v3)
+ax2 = plot_spikes(axs[2], spikes3, p['range_t'])
 plt.show()
 
 
-spikes_ms2 = [item * p['dt'] for item in spikes_ms2]
-print(f"Spikes at: {spikes_ms2} ms")
+v4, spikes4 = run_Izikevic(p, I_heviside)
+fig, axs = plt.subplots(3, sharex=True, sharey=False)
+plot_input(axs[0], I_heviside, p['range_t'])
+plot_voltage(axs[1], p, v4)
+ax2 = plot_spikes(axs[2], spikes4, p['range_t'])
+plt.show()
 
 
 
