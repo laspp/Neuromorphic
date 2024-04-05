@@ -1,2 +1,0 @@
-# Neuromorphic
-Spiking neural models
