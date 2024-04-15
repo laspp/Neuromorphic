@@ -19,10 +19,10 @@ class param:
 	t_back = -20
 	t_fore = 20
 
-	pixel_x = 28
+	pixel_x = 2
 	
 	m = pixel_x*pixel_x #Number of neurons in first layer
-	n =  8  #Number of neurons in second layer
+	n =  4  #Number of neurons in second layer
 	
 
 	# SDPT learning rule
@@ -57,7 +57,7 @@ class param:
 	norm_th = 3
 
 
-class param2:
+class new_param:
 	scale = 1
 	T = 200  # Length of the spike train
 
@@ -72,13 +72,12 @@ class param2:
 	t_back = -20
 	t_fore = 20
 
-	pixel_x = 28
+	pixel_x = 2
 
 	m = pixel_x * pixel_x  # Number of neurons in first layer
-	n = 8  # Number of neurons in second layer
-
+	n = 4  # Number of neurons in second layer
 	#
-
+	# SDPT learning rule
 	w_max = 1.5 * scale
 	w_min = -1.2 * scale
 	sigma = 0.02
@@ -90,7 +89,21 @@ class param2:
 	epoch = 20
 
 	# receptive field
-	sca1 =  0.625
-	sca2 =  0.125
+	sca1 = 0.625
+	sca2 = 0.125
 	sca3 = -0.125
 	sca4 = -.5
+
+	# spike train
+	a = -1.069
+	b = 2.781
+	min_Hz = 1
+	max_Hz = 20
+	norm_freq = 600
+
+	# train
+	syn_matrix = 0.4
+	syn_winner = 0.06
+
+	# var_th
+	norm_th = 3

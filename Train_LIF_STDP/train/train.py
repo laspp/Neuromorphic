@@ -17,7 +17,8 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from parameters import param as par
+from parameters import new_param as par
+#from parameters import param as par
 from var_th import threshold
 import os
 import sys
@@ -163,7 +164,8 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		data_path = Path(base_path, 'data', 'MNIST_0-5')
+		#data_path = Path(base_path, 'data', 'MNIST_0-5')
+		data_path = Path(base_path, 'data', 'TOY_BINARY')
 	print("Using training data in folder: ",data_path)
 	train_net(data_path)
   

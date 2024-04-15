@@ -27,20 +27,23 @@ def rf(inp):
 	 	[	sca4 ,sca3 , sca2 ,sca3 ,sca4]]
 
 	pot = np.zeros([par.pixel_x,par.pixel_x])
-	ran = [-2,-1,0,1,2]				# TODO: sta su ovi param
-	ox = 2
-	oy = 2
+	pot = np.zeros([2, 2])
 
-	#Convolution
-	for i in range(par.pixel_x):
-		for j in range(par.pixel_x):
-			summ = 0
-			for m in ran:
-				for n in ran:
-					if (i+m)>=0 and (i+m)<=par.pixel_x-1 and (j+n)>=0 and (j+n)<=par.pixel_x-1:
-						summ = summ + w[ox+m][oy+n]*inp[i+m][j+n]/255
-			pot[i][j] = summ
-	return pot		
+	# ran = [-2,-1,0,1,2]				# TODO: sta su ovi param
+	# ox = 2
+	# oy = 2
+	#
+	# #Convolution
+	# for i in range(par.pixel_x):
+	# 	for j in range(par.pixel_x):
+	# 		summ = 0
+	# 		for m in ran:
+	# 			for n in ran:
+	# 				if (i+m)>=0 and (i+m)<=par.pixel_x-1 and (j+n)>=0 and (j+n)<=par.pixel_x-1:
+	# 					summ = summ + w[ox+m][oy+n]*inp[i+m][j+n]/255
+	# 		pot[i][j] = summ
+	return pot			# treba da bude ndarray (28, 28), odnosno (2, 2)
+
 """
 if __name__ == '__main__':
 
