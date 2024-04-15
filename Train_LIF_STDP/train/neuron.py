@@ -13,12 +13,12 @@ from parameters import param as par
 class neuron:
 	def __init__(self):
 		self.t_ref = par.t_ref
-		self.t_rest = -1
+		self.t_rest = par.t_rest
 		self.P = par.Prest
 	def check(self):
 		if self.P>= self.Pth:
 			self.P = par.Prest
-			return 1	
+			return 1						# spike!
 		elif self.P < par.Pmin:
 			self.P  = par.Prest
 			return 0
@@ -28,5 +28,5 @@ class neuron:
 		self.P  = par.Pmin
 	def initial(self, th):
 		self.Pth = th
-		self.t_rest = -1
+		self.t_rest = par.t_rest
 		self.P = par.Prest

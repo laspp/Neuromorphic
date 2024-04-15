@@ -5,16 +5,19 @@
 
 #########################################################################################################################
 
+# filtriranje slike
 
+# TODO: za binarne slike pogledati kako izracuna, treba da su dovoljno razmaknute vrednosti
+# ali i da ne bude negde 0 jer onda nema spajka. mozda rucno fiksirati neke vrednosti
 import numpy as np
 from parameters import param as par
 
 
 def rf(inp):
-	sca1 =  0.625
-	sca2 =  0.125
-	sca3 = -0.125
-	sca4 = -.5
+	sca1 = par.sca1
+	sca2 = par.sca2
+	sca3 = par.sca3
+	sca4 = par.sca4
 
 	#Receptive field kernel
 	w = [[	sca4 ,sca3 , sca2 ,sca3 ,sca4],
@@ -24,7 +27,7 @@ def rf(inp):
 	 	[	sca4 ,sca3 , sca2 ,sca3 ,sca4]]
 
 	pot = np.zeros([par.pixel_x,par.pixel_x])
-	ran = [-2,-1,0,1,2]
+	ran = [-2,-1,0,1,2]				# TODO: sta su ovi param
 	ox = 2
 	oy = 2
 

@@ -27,20 +27,20 @@ def encode(pot):
 			temp = np.zeros([(par.T+1),])
 
 			#calculating firing rate proportional to the membrane potential
-			freq = interp(pot[l][m], [-1.069,2.781], [1,20])
+			freq = interp(pot[l][m], [par.a, par.b], [par.min_Hz, par.max_Hz])
 			#freq = math.ceil(0.102*pot[l][m] + 52.02)
 			#print(freq)
-			if freq<=0:
+			if freq <= 0:
 				print("Error frequency <=0")
 				
-			freq1 = math.ceil(600/freq)
+			freq1 = math.ceil(par.norm_freq/freq)
 
 			#generating spikes according to the firing rate
 			#print(freq1)
 			k = freq1
 			if(pot[l][m]>0):
 				while k<(par.T+1):
-					temp[k] = 1
+					temp[k] = 1		# visine 1
 					k = k + freq1
 			train.append(temp)
 			# print sum(temp)

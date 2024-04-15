@@ -44,7 +44,7 @@ def train_net(train_data_dir):
 
 	for i in range(par.n):
 		for j in range(par.m):
-			synapse[i][j] = random.uniform(0,0.4*par.scale)
+			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
 
 
 
@@ -56,7 +56,7 @@ def train_net(train_data_dir):
 				#Convolving image with receptive field
 				pot = rf(image)
 				#pot=image/255
-				#print(pot)
+				#print(pot)				uraditi
 				#Generating spike train
 				train = np.array(encode(pot))
 				#print(train)
@@ -89,7 +89,7 @@ def train_net(train_data_dir):
 						if(x.t_rest<t):
 							x.P = x.P + np.dot(synapse[j], train[:,t])
 							if(x.P>par.Prest):
-								x.P -= par.D
+								x.P -= par.D			#leak
 							active_pot[j] = x.P
 						
 						pot_arrays[j].append(x.P)
@@ -104,7 +104,7 @@ def train_net(train_data_dir):
 							print(file," -> " ," Neuron ",str(winner))
 							for s in range(par.n):
 								if(s!=winner):
-									layer2[s].P = par.Pmin
+									layer2[s].P = par.Pmin			#ugasi ostale
 
 					#Check for spikes and update weights				
 					for j,x in enumerate(layer2):
@@ -131,7 +131,7 @@ def train_net(train_data_dir):
 				if(img_win):
 					for p in range(par.m):
 						if sum(train[p])==0:
-							synapse[img_win][p] -= 0.06*par.scale
+							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
 			

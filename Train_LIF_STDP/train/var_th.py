@@ -17,6 +17,7 @@ from reconstruct import reconst_weights
 from parameters import param as par
 import os
 
+# TODO: menjati th za binarne slike
 
 def threshold(train):
 
@@ -27,7 +28,7 @@ def threshold(train):
 		if simul_active>thresh:
 			thresh = simul_active
 
-	return (thresh/3)*par.scale
+	return (thresh/par.norm_th)*par.scale
 
 """
 if __name__ == '__main__':	
