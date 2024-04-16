@@ -102,8 +102,8 @@ class new_param:
 	norm_freq = 600
 
 	# train
-	syn_matrix = 0.4
-	syn_winner = 0.06
+	syn_matrix = 0.8			# TODO: menjati ovo
+	syn_winner = 0.1
 
 	# var_th
-	norm_th = 3
+	norm_th = 5

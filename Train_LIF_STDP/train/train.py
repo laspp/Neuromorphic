@@ -8,6 +8,8 @@
 #####################################################################################################################################
 
 import numpy as np
+from matplotlib.pyplot import plot
+
 from neuron import neuron
 import random
 from matplotlib import pyplot as plt
@@ -31,7 +33,7 @@ def train_net(train_data_dir):
 		pot_arrays.append([])
 
 	#time series 
-	time  = np.arange(1, par.T+1, 1)
+	time = np.arange(1, par.T+1, 1)
 
 	layer2 = []
 
@@ -57,11 +59,10 @@ def train_net(train_data_dir):
 				#Convolving image with receptive field
 				pot = rf(image)
 				#pot=image/255
-				#print(pot)				uraditi
+				print(pot)				# uraditi
 				#Generating spike train
 				train = np.array(encode(pot))
 				#print(train)
-
 				#calculating threshold value for the image
 				var_threshold = threshold(train)
 

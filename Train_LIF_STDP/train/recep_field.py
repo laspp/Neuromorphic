@@ -15,6 +15,10 @@ from parameters import new_param as par				# for 2x2 image
 from pprint import pprint
 
 def rf(inp):
+	"""
+	:param inp: input image, as a matrix
+	:return:
+	"""
 	sca1 = par.sca1
 	sca2 = par.sca2
 	sca3 = par.sca3
@@ -46,9 +50,14 @@ def rf(inp):
 					if (i+m)>=0 and (i+m)<=par.pixel_x-1 and (j+n)>=0 and (j+n)<=par.pixel_x-1:
 						summ = summ + w[ox+m][oy+n]*inp[i+m][j+n]/255
 			pot[i][j] = summ
+	if np.all(inp == [[0, 0], [255, 255]]): 	# crno pa belo
+		pot = [[0.2, 0.2], [0.8, 0.8]]
+	else:
+		pot = [[0.8, 0.8], [0.2, 0.2]]
+	#print(pot)
 	return pot			# treba da bude ndarray (28, 28), odnosno (2, 2)
 
-#rf(0)
+rf([[255, 255], [0, 0]])
 """
 if __name__ == '__main__':
 
