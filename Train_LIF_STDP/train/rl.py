@@ -8,7 +8,8 @@
 
 import numpy as np
 from matplotlib import pyplot as plt
-from parameters import param as par
+#from parameters import param as par
+from parameters import new_param as par
 
 #STDP reinforcement learning curve
 def rl(t):

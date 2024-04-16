@@ -17,8 +17,8 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from parameters import new_param as par
 #from parameters import param as par
+from parameters import new_param as par
 from var_th import threshold
 import os
 import sys
@@ -145,7 +145,7 @@ def train_net(train_data_dir):
 	#plotting 
 	for i in range(par.n):
 		axes = plt.gca()
-		axes.set_ylim([-20,50])
+		#axes.set_ylim([-20,50])
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
 		plt.show()
