@@ -14,8 +14,8 @@ from recep_field import rf
 from rl import rl
 from rl import update
 import math
-#from parameters import param as par
-from parameters import new_param as par
+from parameters import param as par
+#from parameters import new_param as par
 
 def encode(pot):
 

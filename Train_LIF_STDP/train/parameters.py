@@ -19,10 +19,10 @@ class param:
 	t_back = -20
 	t_fore = 20
 
-	pixel_x = 2
+	pixel_x = 28
 	
 	m = pixel_x*pixel_x #Number of neurons in first layer
-	n =  4  #Number of neurons in second layer
+	n =  8  #Number of neurons in second layer
 	
 
 	# SDPT learning rule
@@ -51,11 +51,12 @@ class param:
 
 	# train
 	syn_matrix = 0.4
-	syn_winner = 0.06
+	#syn_winner = 0.06
+	syn_winner = 0.1
 
 	# var_th
-	norm_th = 3
-
+	#norm_th = 3
+	norm_th = 7
 
 class new_param:
 	scale = 1
@@ -63,7 +64,7 @@ class new_param:
 
 	# Neuron
 	Prest = 0  # Rest potential of the neuron
-	Pth = 50.0 * scale  # Threshold
+	Pth = 30.0 * scale  # Threshold
 	t_ref = 30  # Refractory period
 	t_rest = -1
 	Pmin = -500.0 * scale  # Minimum potential
@@ -75,7 +76,7 @@ class new_param:
 	pixel_x = 2
 
 	m = pixel_x * pixel_x  # Number of neurons in first layer
-	n = 4  # Number of neurons in second layer
+	n = 2  # Number of neurons in second layer
 	#
 	# SDPT learning rule
 	w_max = 1.5 * scale
@@ -86,7 +87,7 @@ class new_param:
 	tau_plus = 10
 	tau_minus = 10
 
-	epoch = 20
+	epoch = 30
 
 	# receptive field
 	sca1 = 0.625
@@ -102,8 +103,8 @@ class new_param:
 	norm_freq = 600
 
 	# train
-	syn_matrix = 0.8			# TODO: menjati ovo
-	syn_winner = 0.1
+	syn_matrix = 0.9			# TODO: menjati ovo
+	syn_winner = 0.1			# uvek isti neuron pobedjuje pa zato ovo povecano
 
 	# var_th
-	norm_th = 5
+	norm_th = 6

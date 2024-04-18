@@ -19,8 +19,8 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-#from parameters import param as par
-from parameters import new_param as par
+from parameters import param as par
+#from parameters import new_param as par
 from var_th import threshold
 import os
 import sys
@@ -59,7 +59,7 @@ def train_net(train_data_dir):
 				#Convolving image with receptive field
 				pot = rf(image)
 				#pot=image/255
-				print(pot)				# uraditi
+				#print(pot)				# uraditi
 				#Generating spike train
 				train = np.array(encode(pot))
 				#print(train)
@@ -136,6 +136,7 @@ def train_net(train_data_dir):
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
+					#print(synapse[img_win][:])
 			
 
 	ttt = np.arange(0,len(pot_arrays[0]),1)
@@ -174,4 +175,6 @@ def main(data_path=None, *other):
 # Using the special variable  
 # __name__ 
 if __name__=="__main__": 
-	main(*sys.argv[1:]) 
+	main(*sys.argv[1:])
+
+# TODO: staviti fiksne tezine sinapsi pa da se spajkuju za odgovarajuce slike

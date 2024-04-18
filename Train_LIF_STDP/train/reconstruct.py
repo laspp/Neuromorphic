@@ -9,8 +9,8 @@
 import numpy as np
 from numpy import interp
 from recep_field import rf
-#from parameters import param as par
-from parameters import new_param as par
+from parameters import param as par
+#from parameters import new_param as par
 import cv2
 
 def reconst_weights(weights, num):
