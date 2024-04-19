@@ -9,7 +9,7 @@
 import numpy as np
 from numpy import interp
 from recep_field import rf
-from parameters import param as par
+from parameters import scaling_params as par
 #from parameters import new_param as par
 import cv2
 
@@ -19,20 +19,25 @@ def reconst_weights(weights, num):
 	img = np.zeros((par.pixel_x,par.pixel_x))
 	for i in range(par.pixel_x):
 		for j in range(par.pixel_x):
-			img[i][j] = int(interp(weights[i][j], [par.w_min,par.w_max], [0,255]))	
-	cv2.imwrite('neuron' + str(num) + '.png' ,img)
+			img[i][j] = int(interp(weights[i][j], [par.w_min,par.w_max], [0,255]))
+			#img[i][j] = int(interp(weights[i][j], [-1.2, 1], [0, 255]))
+			# DONE: skaliranje!!
+	#cv2.imwrite('neuron' + str(num) + '.png' ,img)
+	cv2.imwrite('neuron' + str(num-1) + '.png' ,img)
+
 	return img
 
-def reconst_rf(weights, num):
-	weights = np.array(weights)
-	weights = np.reshape(weights, (par.pixel_x,par.pixel_x))
-	img = np.zeros((par.pixel_x,par.pixel_x))
-	for i in range(par.pixel_x):
-		for j in range(par.pixel_x):
-			img[i][j] = int(interp(weights[i][j], [-2,3.625], [0,255]))	
-
-	cv2.imwrite('neuron' + str(num) + '.png' ,img)
-	return img
+# ovo se ne koristi
+# def reconst_rf(weights, num):
+# 	weights = np.array(weights)
+# 	weights = np.reshape(weights, (par.pixel_x,par.pixel_x))
+# 	img = np.zeros((par.pixel_x,par.pixel_x))
+# 	for i in range(par.pixel_x):
+# 		for j in range(par.pixel_x):
+# 			img[i][j] = int(interp(weights[i][j], [-2,3.625], [0,255]))
+#
+# 	cv2.imwrite('neuron' + str(num) + '.png' ,img)
+# 	return img
 
 """
 if __name__ == '__main__':

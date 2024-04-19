@@ -19,7 +19,7 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from parameters import param as par
+from parameters import scaling_params as par
 #from parameters import new_param as par
 from var_th import threshold
 import os
@@ -136,6 +136,7 @@ def train_net(train_data_dir):
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
+
 					#print(synapse[img_win][:])
 			
 
@@ -148,6 +149,7 @@ def train_net(train_data_dir):
 	for i in range(par.n):
 		axes = plt.gca()
 		#axes.set_ylim([-20,50])
+		plt.title("Neuron " + str(i))
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
 		plt.show()

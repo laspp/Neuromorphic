@@ -10,7 +10,7 @@
 # TODO: za binarne slike pogledati kako izracuna, treba da su dovoljno razmaknute vrednosti
 # ali i da ne bude negde 0 jer onda nema spajka. mozda rucno fiksirati neke vrednosti
 import numpy as np
-from parameters import param as par
+from parameters import scaling_params as par
 #from parameters import new_param as par				# for 2x2 image
 from pprint import pprint
 
@@ -84,9 +84,9 @@ def rf(inp):
 	#print(pot)
 	return pot			# treba da bude ndarray (28, 28), odnosno (2, 2)
 
-upper_black = np.zeros((28, 28))
-upper_black[14:, :] = 255			# [0 0 0 .. 255 255 255]
-rf(upper_black)
+# upper_black = np.zeros((28, 28))
+# upper_black[14:, :] = 255			# [0 0 0 .. 255 255 255]
+# rf(upper_black)
 """
 if __name__ == '__main__':
 

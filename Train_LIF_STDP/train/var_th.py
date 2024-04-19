@@ -14,7 +14,7 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from parameters import param as par
+from parameters import scaling_params as par
 #from parameters import new_param as par
 import os
 
@@ -28,7 +28,7 @@ def threshold(train):
 		simul_active = sum(train[:,i])
 		if simul_active>thresh:
 			thresh = simul_active
-	print(thresh)
+	#print(thresh)
 	return (thresh/par.norm_th)*par.scale
 
 """
