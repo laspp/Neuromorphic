@@ -22,3 +22,17 @@ image_data = np.array(
     matrix
 , dtype=np.uint8)
 cv2.imwrite("1.png", image_data)
+
+matrix = [[0, 255], [255, 0]]
+
+image_data = np.array(
+    matrix
+, dtype=np.uint8)
+cv2.imwrite("2.png", image_data)
+
+matrix = [[255, 0], [0, 255]]
+
+image_data = np.array(
+    matrix
+, dtype=np.uint8)
+cv2.imwrite("3.png", image_data)

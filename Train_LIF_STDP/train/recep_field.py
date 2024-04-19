@@ -41,6 +41,7 @@ def rf(inp):
 	ox = 2
 	oy = 2
 
+	#region konvolucija
 	# Convolution
 	# smoothing
 	# for i in range(par.pixel_x):
@@ -51,7 +52,8 @@ def rf(inp):
 	# 				if (i+m)>=0 and (i+m)<=par.pixel_x-1 and (j+n)>=0 and (j+n)<=par.pixel_x-1:
 	# 					summ = summ + w[ox+m][oy+n]*inp[i+m][j+n]/255
 	# 		pot[i][j] = summ
-
+	#endregion
+	#region hard
 	# upper_black = np.zeros((28, 28))
 	# upper_black[14:, :] = 255			# [0 0 0 .. 255 255 255]
 	# upper_white = np.zeros((28, 28))
@@ -82,12 +84,17 @@ def rf(inp):
 	#
 	# else:
 	# 	raise Exception("Invalid input image")
+	#endregion
 
 	rows, cols = inp.shape
 	upper_black = np.zeros_like(inp)
 	upper_white = np.zeros_like(inp)
 	upper_black[rows//2:, :] = 255
 	upper_white[:rows//2, :] = 255
+	karo1 = [[0, 255], [255, 0]]
+	karo2 = [[255, 0], [0, 255]]
+
+
 	if np.all(inp == upper_black):
 		pot = np.zeros_like(inp)
 		pot[:rows//2, :] = 0
@@ -96,6 +103,10 @@ def rf(inp):
 		pot = np.zeros_like(inp)
 		pot[:rows//2, :] = 3.5
 		pot[rows//2:, :] = 0
+	elif np.all(inp == karo1):
+		pot = [[0, 3.5], [3.5, 0]]
+	elif np.all(inp == karo2):
+		pot = [[3.5, 0], [0, 3.5]]
 	else:
 		raise Exception("Invalid input image")
 
