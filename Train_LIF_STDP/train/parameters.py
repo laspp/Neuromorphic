@@ -123,7 +123,8 @@ class scaling_params:
 	t_fore = 20
 
 	#pixel_x = 28
-	pixel_x = 14
+	#pixel_x = 14
+	pixel_x = 2
 
 	m = pixel_x * pixel_x  # Number of neurons in first layer
 	n = 8  # Number of neurons in second layer

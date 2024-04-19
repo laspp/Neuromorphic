@@ -3,8 +3,8 @@ from pprint import pprint
 import numpy as np
 import cv2
 
-matrix = np.zeros((14, 14))
-matrix[7:, :] = 255
+matrix = np.zeros((2, 2))
+matrix[1:, :] = 255
 #pprint(matrix)
 print(np.sum(matrix))
 
@@ -14,9 +14,9 @@ image_data = np.array(
 
 cv2.imwrite("0.png", image_data)
 
-matrix = np.zeros((14, 14))
+matrix = np.zeros((2, 2))
 #matrix[:, :] = 255
-matrix[:7, :] = 255
+matrix[:1, :] = 255
 
 image_data = np.array(
     matrix
