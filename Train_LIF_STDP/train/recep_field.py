@@ -94,7 +94,7 @@ def rf(inp):
 	karo1 = [[0, 255], [255, 0]]
 	karo2 = [[255, 0], [0, 255]]
 
-
+	# TODO: iskodirati da su crni 0 a beli 3.5
 	if np.all(inp == upper_black):
 		pot = np.zeros_like(inp)
 		pot[:rows//2, :] = 0
@@ -107,6 +107,10 @@ def rf(inp):
 		pot = [[0, 3.5], [3.5, 0]]
 	elif np.all(inp == karo2):
 		pot = [[3.5, 0], [0, 3.5]]
+	elif np.all(inp == [[255, 255], [255, 0]]):
+		pot = [[3.5, 3.5], [3.5, 0]]
+	elif np.all(inp == [[0, 0], [0, 255]]):
+		pot = [[0, 0], [0, 3.5]]
 	else:
 		raise Exception("Invalid input image")
 
