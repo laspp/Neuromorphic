@@ -41,7 +41,7 @@ def rf(inp):
 	ox = 2
 	oy = 2
 
-	#Convolution
+	# Convolution
 	# smoothing
 	# for i in range(par.pixel_x):
 	# 	for j in range(par.pixel_x):
@@ -51,36 +51,54 @@ def rf(inp):
 	# 				if (i+m)>=0 and (i+m)<=par.pixel_x-1 and (j+n)>=0 and (j+n)<=par.pixel_x-1:
 	# 					summ = summ + w[ox+m][oy+n]*inp[i+m][j+n]/255
 	# 		pot[i][j] = summ
-	upper_black = np.zeros((28, 28))
-	upper_black[14:, :] = 255			# [0 0 0 .. 255 255 255]
-	upper_white = np.zeros((28, 28))
-	upper_white[:14, :] = 255			# [255 255 255 ... 0 0 0]
-	whole_black = np.zeros((28, 28))
-	whole_white = np.zeros((28, 28))
-	whole_white[:, :] = 255
-	first_rows = np.zeros((28, 28))
-	first_rows[:1, :] = 255
-	if np.all(inp == upper_black): 	# crno pa belo
-		#pot = [[0.2, 0.2], [0.8, 0.8]]
-		pot = np.zeros((28, 28))
-		pot[:14, :] = 0
-		pot[14:, :] = 3.5
-	elif np.all(inp == upper_white):
-		pot = np.zeros((28, 28))
-		pot[:14, :] = 3.5
-		pot[14:, :] = 0
-	elif np.all(inp == whole_black):
-		pot = np.zeros((28, 28))
-	elif np.all(inp == whole_white):
-		pot = np.zeros((28, 28))
-		pot[:, :] = 3.5
-	elif np.all(inp == first_rows):
-		pot = np.zeros((28, 28))
-		pot[:1, :] = 3.5
-		pot[1:, :] = 3.5
 
+	# upper_black = np.zeros((28, 28))
+	# upper_black[14:, :] = 255			# [0 0 0 .. 255 255 255]
+	# upper_white = np.zeros((28, 28))
+	# upper_white[:14, :] = 255			# [255 255 255 ... 0 0 0]
+	# whole_black = np.zeros((28, 28))
+	# whole_white = np.zeros((28, 28))
+	# whole_white[:, :] = 255
+	# first_rows = np.zeros((28, 28))
+	# first_rows[:1, :] = 255
+	# if np.all(inp == upper_black): 	# crno pa belo
+	# 	#pot = [[0.2, 0.2], [0.8, 0.8]]
+	# 	pot = np.zeros((28, 28))
+	# 	pot[:14, :] = 0
+	# 	pot[14:, :] = 3.5
+	# elif np.all(inp == upper_white):
+	# 	pot = np.zeros((28, 28))
+	# 	pot[:14, :] = 3.5
+	# 	pot[14:, :] = 0
+	# elif np.all(inp == whole_black):
+	# 	pot = np.zeros((28, 28))
+	# elif np.all(inp == whole_white):
+	# 	pot = np.zeros((28, 28))
+	# 	pot[:, :] = 3.5
+	# elif np.all(inp == first_rows):
+	# 	pot = np.zeros((28, 28))
+	# 	pot[:1, :] = 3.5
+	# 	pot[1:, :] = 3.5
+	#
+	# else:
+	# 	raise Exception("Invalid input image")
+
+	rows, cols = inp.shape
+	upper_black = np.zeros_like(inp)
+	upper_white = np.zeros_like(inp)
+	upper_black[rows//2:, :] = 255
+	upper_white[:rows//2, :] = 255
+	if np.all(inp == upper_black):
+		pot = np.zeros_like(inp)
+		pot[:rows//2, :] = 0
+		pot[rows//2:, :] = 3.5
+	elif np.all(inp == upper_white):
+		pot = np.zeros_like(inp)
+		pot[:rows//2, :] = 3.5
+		pot[rows//2:, :] = 0
 	else:
 		raise Exception("Invalid input image")
+
 	#print(pot)
 	return pot			# treba da bude ndarray (28, 28), odnosno (2, 2)
 
