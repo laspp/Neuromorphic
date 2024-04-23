@@ -21,7 +21,7 @@ def rl(t):
 
 
 #STDP weight update rule
-def update(w, del_w):
+def update(w, del_w):		# ovo nije bas ok za hardver
 	if del_w<0:
 		return w + par.sigma*del_w*(w-abs(par.w_min))*par.scale
 	elif del_w>0:

@@ -124,14 +124,14 @@ class scaling_params:
 
 	#pixel_x = 28
 	#pixel_x = 14
-	pixel_x = 2
+	pixel_x = 28
 
 	m = pixel_x * pixel_x  # Number of neurons in first layer
 	n = 10  # Number of neurons in second layer
 
 	# SDPT learning rule
 	#w_max = 1.5 * scale
-	w_max = 0.1 * scale			# NOTE: na 0.0 je skroz belo
+	w_max = 0.2 * scale			# NOTE: na 0.0 je skroz belo
 	w_min = -1.2 * scale
 	sigma = 0.02
 	A_plus = 0.8  # time difference is positive i.e negative reinforcement

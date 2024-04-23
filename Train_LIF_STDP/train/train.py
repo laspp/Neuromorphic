@@ -168,9 +168,11 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		#data_path = Path(base_path, 'data', 'MNIST_0-5')
+		data_path = Path(base_path, 'data', 'MNIST_0-5')
 		#data_path = Path(base_path, 'data', 'TOY_BINARY')
-		data_path = Path(base_path, 'data', 'BINARY_14')
+		#data_path = Path(base_path, 'data', 'BINARY_14')
+		data_path = Path(base_path, 'data', 'MNIST_TRAIN')
+
 
 	print("Using training data in folder: ",data_path)
 	train_net(data_path)

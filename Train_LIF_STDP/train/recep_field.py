@@ -10,6 +10,8 @@
 # TODO: za binarne slike pogledati kako izracuna, treba da su dovoljno razmaknute vrednosti
 # ali i da ne bude negde 0 jer onda nema spajka. mozda rucno fiksirati neke vrednosti
 import numpy as np
+from numpy import interp
+
 from parameters import scaling_params as par
 #from parameters import new_param as par				# for 2x2 image
 from pprint import pprint
@@ -95,24 +97,34 @@ def rf(inp):
 	karo2 = [[255, 0], [0, 255]]
 
 	# TODO: iskodirati da su crni 0 a beli 3.5
-	if np.all(inp == upper_black):
-		pot = np.zeros_like(inp)
-		pot[:rows//2, :] = 0
-		pot[rows//2:, :] = 3.5
-	elif np.all(inp == upper_white):
-		pot = np.zeros_like(inp)
-		pot[:rows//2, :] = 3.5
-		pot[rows//2:, :] = 0
-	elif np.all(inp == karo1):
-		pot = [[0, 3.5], [3.5, 0]]
-	elif np.all(inp == karo2):
-		pot = [[3.5, 0], [0, 3.5]]
-	elif np.all(inp == [[255, 255], [255, 0]]):
-		pot = [[3.5, 3.5], [3.5, 0]]
-	elif np.all(inp == [[0, 0], [0, 255]]):
-		pot = [[0, 0], [0, 3.5]]
-	else:
-		raise Exception("Invalid input image")
+	for i in range(par.pixel_x):
+		for j in range(par.pixel_x):
+			if inp[i][j] == 0:
+				pot[i][j] = 0
+			elif inp[i][j] == 255:
+				pot[i][j] = 3.5
+			else:
+				pot[i][j] = int(interp(inp[i][j], [0, 255], [0, 3.5]))
+				#raise Exception("Siva")
+
+	# if np.all(inp == upper_black):
+	# 	pot = np.zeros_like(inp)
+	# 	pot[:rows//2, :] = 0
+	# 	pot[rows//2:, :] = 3.5
+	# elif np.all(inp == upper_white):
+	# 	pot = np.zeros_like(inp)
+	# 	pot[:rows//2, :] = 3.5
+	# 	pot[rows//2:, :] = 0
+	# elif np.all(inp == karo1):
+	# 	pot = [[0, 3.5], [3.5, 0]]
+	# elif np.all(inp == karo2):
+	# 	pot = [[3.5, 0], [0, 3.5]]
+	# elif np.all(inp == [[255, 255], [255, 0]]):
+	# 	pot = [[3.5, 3.5], [3.5, 0]]
+	# elif np.all(inp == [[0, 0], [0, 255]]):
+	# 	pot = [[0, 0], [0, 3.5]]
+	# else:
+	# 	raise Exception("Invalid input image")
 
 	#print(pot)
 	return pot			# treba da bude ndarray (28, 28), odnosno (2, 2)
