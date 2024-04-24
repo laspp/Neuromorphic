@@ -47,6 +47,7 @@ def train_net(train_data_dir):
 
 	for i in range(par.n):
 		for j in range(par.m):
+			#random.seed(1)
 			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
 
 
@@ -171,7 +172,7 @@ def main(data_path=None, *other):
 		data_path = Path(base_path, 'data', 'MNIST_0-5')
 		#data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
-		data_path = Path(base_path, 'data', 'MNIST_TRAIN')
+		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
 
 
 	print("Using training data in folder: ",data_path)
