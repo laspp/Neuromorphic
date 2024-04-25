@@ -1,4 +1,5 @@
 # ovo je main
+from pprint import pprint
 
 ####################################################### README ####################################################################
 
@@ -10,7 +11,8 @@
 import numpy as np
 from matplotlib.pyplot import plot
 
-from Neuromorphic.Train_LIF_STDP.train.neuron import neuron
+from analyze import analyze
+from neuron import neuron
 #from neuron import neuron
 import random
 from matplotlib import pyplot as plt
@@ -55,6 +57,7 @@ def train_net(train_data_dir):
 
 	for k in range(par.epoch):
 		print("EPOCH", k,":")
+		last_winners = {}
 		for file in os.listdir(train_data_dir):
 			if file.endswith('.png'):
 				image = cv2.imread(os.path.join(train_data_dir, file), 0)
@@ -105,7 +108,8 @@ def train_net(train_data_dir):
 							f_spike = 1
 							winner = np.argmax(active_pot)
 							img_win = winner
-							print(file," -> " ," Neuron ",str(winner))
+							#print(file," -> " ," Neuron ",str(winner))
+							last_winners[file] = winner
 							for s in range(par.n):
 								if(s!=winner):
 									layer2[s].P = par.Pmin			#ugasi ostale
@@ -140,7 +144,7 @@ def train_net(train_data_dir):
 								synapse[img_win][p] = par.w_min
 
 					#print(synapse[img_win][:])
-			
+	#print(last_winners)
 
 	ttt = np.arange(0,len(pot_arrays[0]),1)
 	Pth = []
@@ -154,7 +158,7 @@ def train_net(train_data_dir):
 		plt.title("Neuron " + str(i))
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
-		plt.show()
+		#plt.show()
 		# TODO: dodati i ulaze
 		# TODO: proveriti sinapse za 2x2 i 28x28 i nacrtati na istoj slici sinapse i spajkove
 		# 2x2 pa 5x5
@@ -165,7 +169,7 @@ def train_net(train_data_dir):
 	for i in range(par.n):
 		reconst_weights(synapse[i],i+1)
 
-	return synapse
+	return synapse, last_winners
 
 # Defining main function 
 def main(data_path=None, *other):
@@ -184,7 +188,13 @@ def main(data_path=None, *other):
 
 
 	print("Using training data in folder: ",data_path)
-	train_net(data_path)
+	last_winners = []
+	for i in range(100):
+		_, last = train_net(data_path)
+		last_winners.append(last)
+	pprint(last_winners)
+	accuracy = analyze(last_winners)
+	print(str(accuracy) + " %")
   
   
 # Using the special variable  
