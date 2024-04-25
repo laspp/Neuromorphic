@@ -28,6 +28,8 @@ from var_th import threshold
 import os
 import sys
 from pathlib import Path
+import winsound
+from tqdm import tqdm
 
 def train_net(train_data_dir):
 	#potentials of output neurons
@@ -181,20 +183,22 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		data_path = Path(base_path, 'data', 'MNIST_0-5')
-		#data_path = Path(base_path, 'data', 'TOY_BINARY')
+		#data_path = Path(base_path, 'data', 'MNIST_0-5')
+		data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
 		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
 
 
 	print("Using training data in folder: ",data_path)
-	last_winners = []
-	for i in range(100):
-		_, last = train_net(data_path)
-		last_winners.append(last)
-	pprint(last_winners)
-	accuracy = analyze(last_winners)
-	print(str(accuracy) + " %")
+	train_net(data_path)
+	# last_winners = []
+	# for i in tqdm(range(100), colour='GREEN'):
+	# 	_, last = train_net(data_path)
+	# 	last_winners.append(last)
+	# pprint(last_winners)
+	# accuracy = analyze(last_winners)
+	# print(str(accuracy) + " %")
+	# winsound.MessageBeep()
   
   
 # Using the special variable  

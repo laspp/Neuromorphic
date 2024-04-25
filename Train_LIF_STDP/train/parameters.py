@@ -116,8 +116,8 @@ class scaling_params:
 	Pth = 50.0 * scale  # Threshold
 	t_ref = 30  # Refractory period
 	t_rest = -1
-	Pmin = -500.0 * scale  # Minimum potential
-	#Pmin = -100.0 * scale  # Minimum potential
+	#Pmin = -500.0 * scale  # Minimum potential
+	Pmin = -100.0 * scale  # Minimum potential
 	#Pmin = -1000.0 * scale  # Minimum potential
 
 	D = 0.15 * scale  # Leakage
@@ -127,7 +127,7 @@ class scaling_params:
 
 	#pixel_x = 28
 	#pixel_x = 14
-	pixel_x = 28
+	pixel_x = 2
 
 	m = pixel_x * pixel_x  # Number of neurons in first layer
 	n = 10  # Number of neurons in second layer
