@@ -46,6 +46,8 @@ def encode(pot):
 			train.append(temp)
 			# print sum(temp)
 	return train
+# lista od 784, nizovi po 200. za svaki piksel vrednost spjkova tj niz od 200
+
 """
 if __name__  == '__main__':
 	# m = []

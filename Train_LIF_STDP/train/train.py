@@ -10,7 +10,8 @@
 import numpy as np
 from matplotlib.pyplot import plot
 
-from neuron import neuron
+from Neuromorphic.Train_LIF_STDP.train.neuron import neuron
+#from neuron import neuron
 import random
 from matplotlib import pyplot as plt
 import cv2
@@ -19,7 +20,7 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from parameters import scaling_params as par
+from Neuromorphic.Train_LIF_STDP.train.parameters import scaling_params as par
 #from parameters import new_param as par
 from var_th import threshold
 import os
@@ -154,10 +155,17 @@ def train_net(train_data_dir):
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
 		plt.show()
+		# TODO: dodati i ulaze
+		# TODO: proveriti sinapse za 2x2 i 28x28 i nacrtati na istoj slici sinapse i spajkove
+		# 2x2 pa 5x5
+		# da po velicini slike stavi br piksela
+		# TODO: probati umesto -500, -100, -1000
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
 		reconst_weights(synapse[i],i+1)
+
+	return synapse
 
 # Defining main function 
 def main(data_path=None, *other):
