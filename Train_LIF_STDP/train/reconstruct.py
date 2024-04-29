@@ -15,12 +15,12 @@ import os
 import cv2
 
 
-def reconst_weights(weights, num):
+def reconst_weights(weights, num, pixel_x):
 	weights = np.array(weights)
-	weights = np.reshape(weights, (par.pixel_x,par.pixel_x))
-	img = np.zeros((par.pixel_x,par.pixel_x))
-	for i in range(par.pixel_x):
-		for j in range(par.pixel_x):
+	weights = np.reshape(weights, (pixel_x, pixel_x))
+	img = np.zeros((pixel_x, pixel_x))
+	for i in range(pixel_x):
+		for j in range(pixel_x):
 			img[i][j] = int(interp(weights[i][j], [par.w_min,par.w_max], [0,255]))
 			#img[i][j] = int(interp(weights[i][j], [-1.2, 1], [0, 255]))
 			# DONE: skaliranje!!

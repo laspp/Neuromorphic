@@ -11,7 +11,6 @@ from pprint import pprint
 import numpy as np
 from matplotlib.pyplot import plot
 
-from analyze import analyze
 from neuron import neuron
 #from neuron import neuron
 import random
@@ -31,7 +30,9 @@ from pathlib import Path
 import winsound
 from tqdm import tqdm
 
-def train_net(train_data_dir):
+from parameters import *
+
+def train_net(train_data_dir, pixel_x, display_plots=True):
 	#potentials of output neurons
 	pot_arrays = []
 	for i in range(par.n):
@@ -48,10 +49,10 @@ def train_net(train_data_dir):
 		layer2.append(a)
 
 	#synapse matrix	initialization
-	synapse = np.zeros((par.n,par.m))
+	synapse = np.zeros((par.n,pixel_x*pixel_x))
 
 	for i in range(par.n):
-		for j in range(par.m):
+		for j in range(pixel_x*pixel_x):
 			#random.seed(1)
 			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
 
@@ -110,7 +111,7 @@ def train_net(train_data_dir):
 							f_spike = 1
 							winner = np.argmax(active_pot)
 							img_win = winner
-							#print(file," -> " ," Neuron ",str(winner))
+							print(file," -> " ," Neuron ",str(winner))
 							last_winners[file] = winner
 							for s in range(par.n):
 								if(s!=winner):
@@ -122,7 +123,7 @@ def train_net(train_data_dir):
 						if(s==1):
 							x.t_rest = t + x.t_ref
 							x.P = par.Prest
-							for h in range(par.m):
+							for h in range(pixel_x*pixel_x):
 								for t1 in range(-2,par.t_back-1, -1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
@@ -139,7 +140,7 @@ def train_net(train_data_dir):
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 											
 				if(img_win):
-					for p in range(par.m):
+					for p in range(pixel_x*pixel_x):
 						if sum(train[p])==0:
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
@@ -160,7 +161,8 @@ def train_net(train_data_dir):
 		plt.title("Neuron " + str(i))
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
-		#plt.show()
+		if display_plots:
+			plt.show()
 		# TODO: dodati i ulaze
 		# TODO: proveriti sinapse za 2x2 i 28x28 i nacrtati na istoj slici sinapse i spajkove
 		# 2x2 pa 5x5
@@ -169,7 +171,7 @@ def train_net(train_data_dir):
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
-		reconst_weights(synapse[i],i+1)
+		reconst_weights(synapse[i], i+1, pixel_x)
 
 	return synapse, last_winners
 
@@ -183,27 +185,28 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		#data_path = Path(base_path, 'data', 'MNIST_0-5')
-		data_path = Path(base_path, 'data', 'TOY_BINARY')
+		data_path = Path(base_path, 'data', 'MNIST_0-5')
+		#data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
 		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
 
 
 	print("Using training data in folder: ",data_path)
-	train_net(data_path)
-	# last_winners = []
-	# for i in tqdm(range(100), colour='GREEN'):
-	# 	_, last = train_net(data_path)
-	# 	last_winners.append(last)
-	# pprint(last_winners)
-	# accuracy = analyze(last_winners)
-	# print(str(accuracy) + " %")
-	# winsound.MessageBeep()
-  
-  
+	image_file = next(data_path.glob('*.png'), None)
+	img = cv2.imread(str(image_file))
+	pixel_x, _, _ = img.shape
+
+	train_net(data_path, pixel_x)
+
+
+
 # Using the special variable  
 # __name__ 
 if __name__=="__main__": 
 	main(*sys.argv[1:])
 
 # TODO: staviti fiksne tezine sinapsi pa da se spajkuju za odgovarajuce slike
+
+# TODO: neka posebna class img_size kojoj se ovde u main prosledi
+# data path. onda ona odredi velicinu i stavi u size
+# a klasa params koristi to kao pixel_x = img.size

@@ -21,9 +21,9 @@ def encode(pot):
 
 	#initializing spike train
 	train = []
-
-	for l in range(par.pixel_x):
-		for m in range(par.pixel_x):
+	pixel_x, _ = pot.shape
+	for l in range(pixel_x):
+		for m in range(pixel_x):
 		
 			temp = np.zeros([(par.T+1),])
 

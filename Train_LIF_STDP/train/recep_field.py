@@ -1,6 +1,6 @@
 ####################################################### README #########################################################
-
-# This file consists of function that convolves an image with a receptive field so that input to the network is 
+import cv2
+# This file consists of function that convolves an image with a receptive field so that input to the network is
 # close to the form perceived by our eyes. 
 
 #########################################################################################################################
@@ -33,7 +33,9 @@ def rf(inp):
 	 	[	sca3 ,sca2 , sca1 ,sca2 ,sca3],
 	 	[	sca4 ,sca3 , sca2 ,sca3 ,sca4]]
 
-	pot = np.zeros([par.pixel_x,par.pixel_x])
+	#img = cv2.imread(str(inp))
+	pixel_x, _ = inp.shape
+	pot = np.zeros([pixel_x, pixel_x])
 
 
 
@@ -55,8 +57,8 @@ def rf(inp):
 
 
 
-	for i in range(par.pixel_x):
-		for j in range(par.pixel_x):
+	for i in range(pixel_x):
+		for j in range(pixel_x):
 			if inp[i][j] == 0:
 				pot[i][j] = 0
 			elif inp[i][j] == 255:
