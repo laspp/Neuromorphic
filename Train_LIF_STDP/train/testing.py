@@ -10,7 +10,7 @@ import winsound
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 from train import train_net
-from accuracy import accuracy
+from accuracy import *
 
 base_path = Path(__file__).parent.parent
 print(base_path)
@@ -30,13 +30,17 @@ original_stdout = sys.stdout
 sys.stdout = open(os.devnull, 'w')
 
 
-for i in tqdm(range(1), colour='GREEN'):
+for i in tqdm(range(100), colour='GREEN'):
     _, last = train_net(data_path, pixel_x, display_plots=False)
     last_winners.append(last)
 sys.stdout = original_stdout
 pprint(last_winners)
-accuracy = accuracy(last_winners, data_path)
-print(str(accuracy) + " %")
+acc_mse = accuracy_mse(last_winners, data_path)
+acc_mae = accuracy_mae(last_winners, data_path)
+print("Accuracy by MSE: " + str(acc_mse) + " %")
+print("Accuracy by MAE: " + str(acc_mae) + " %")
+print("Using training data in folder: ", data_path)
+
 winsound.MessageBeep()
 
 
