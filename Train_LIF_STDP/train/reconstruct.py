@@ -28,7 +28,7 @@ def reconst_weights(weights, num, pixel_x):
 	output_dir = os.path.join(os.path.dirname(__file__), '..', 'reconstructs')
 
 	#cv2.imwrite('neuron' + str(num-1) + '.png' ,img)
-	cv2.imwrite(os.path.join(output_dir, 'neuron' + str(num - 1) + '.png'), img)
+	cv2.imwrite(os.path.join(output_dir, 'neuron' + str(num) + '.png'), img)
 
 	return img
 

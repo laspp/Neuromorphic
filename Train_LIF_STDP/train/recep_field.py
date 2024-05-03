@@ -7,14 +7,10 @@ import cv2
 
 # filtriranje slike
 
-# TODO: za binarne slike pogledati kako izracuna, treba da su dovoljno razmaknute vrednosti
-# ali i da ne bude negde 0 jer onda nema spajka. mozda rucno fiksirati neke vrednosti
 import numpy as np
 from numpy import interp
-
 from parameters import scaling_params as par
-#from parameters import new_param as par				# for 2x2 image
-from pprint import pprint
+
 
 def rf(inp):
 	"""

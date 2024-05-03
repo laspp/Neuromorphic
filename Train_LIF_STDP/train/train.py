@@ -9,10 +9,7 @@ from pprint import pprint
 #####################################################################################################################################
 
 import numpy as np
-from matplotlib.pyplot import plot
-
 from neuron import neuron
-#from neuron import neuron
 import random
 from matplotlib import pyplot as plt
 import cv2
@@ -21,16 +18,12 @@ from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
-from Neuromorphic.Train_LIF_STDP.train.parameters import scaling_params as par
-#from parameters import new_param as par
+from parameters import scaling_params as par
 from var_th import threshold
 import os
 import sys
 from pathlib import Path
-import winsound
-from tqdm import tqdm
 
-from parameters import *
 
 def train_net(train_data_dir, pixel_x, display_plots=True):
 	#potentials of output neurons
@@ -49,7 +42,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		layer2.append(a)
 
 	#synapse matrix	initialization
-	synapse = np.zeros((par.n,pixel_x*pixel_x))
+	synapse = np.zeros((par.n, pixel_x*pixel_x))
 
 	for i in range(par.n):
 		for j in range(pixel_x*pixel_x):
@@ -67,9 +60,9 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 				#Convolving image with receptive field
 				pot = rf(image)
 				#pot=image/255
-				#print(pot)				# uraditi
+				#print(pot)				# 28x28
 				#Generating spike train
-				train = np.array(encode(pot))
+				train = np.array(encode(pot))	#784x201
 				#print(train)
 				#calculating threshold value for the image
 				var_threshold = threshold(train)
@@ -146,7 +139,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
 
-					#print(synapse[img_win][:])
+	pprint(np.shape(synapse))
 	#print(last_winners)
 
 	ttt = np.arange(0,len(pot_arrays[0]),1)
@@ -161,17 +154,16 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		plt.title("Neuron " + str(i))
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
+		plt.stem(synapse[i])
 		if display_plots:
 			plt.show()
 		# TODO: dodati i ulaze
-		# TODO: proveriti sinapse za 2x2 i 28x28 i nacrtati na istoj slici sinapse i spajkove
-		# 2x2 pa 5x5
-		# da po velicini slike stavi br piksela
-		# TODO: probati umesto -500, -100, -1000
+		# TODO: proveriti sinapse za 2x2 i 5x5 i nacrtati na istoj slici sinapse i spajkove
+
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
-		reconst_weights(synapse[i], i+1, pixel_x)
+		reconst_weights(synapse[i], i, pixel_x)
 
 	return synapse, last_winners
 
@@ -185,7 +177,7 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		data_path = Path(base_path, 'data', 'MNIST_0-5')
+		#data_path = Path(base_path, 'data', 'MNIST_0-5')
 		#data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
 		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
@@ -197,6 +189,7 @@ def main(data_path=None, *other):
 	pixel_x, _, _ = img.shape
 
 	train_net(data_path, pixel_x)
+	return data_path
 
 
 

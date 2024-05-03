@@ -46,7 +46,8 @@ def encode(pot):
 			train.append(temp)
 			# print sum(temp)
 	return train
-# lista od 784, nizovi po 200. za svaki piksel vrednost spjkova tj niz od 200
+# lista od 784, nizovi po 201. za svaki piksel vrednost spjkova tj niz od 200
+# kao da se slika pokaze na 200ms, pa za svaki piksel ima vrednost u svakoj ms
 
 """
 if __name__  == '__main__':

@@ -105,6 +105,7 @@ class scaling_params:
 	min_Hz = 1
 	max_Hz = 20
 	norm_freq = 600
+	#norm_freq = 200
 
 	# train
 	syn_matrix = 0.4
