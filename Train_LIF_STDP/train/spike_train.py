@@ -45,9 +45,32 @@ def encode(pot):
 					k = k + freq1
 			train.append(temp)
 			# print sum(temp)
+
+
+	#plot_trains(train)
+
+
 	return train
 # lista od 784, nizovi po 201. za svaki piksel vrednost spjkova tj niz od 200
 # kao da se slika pokaze na 200ms, pa za svaki piksel ima vrednost u svakoj ms
+
+def plot_trains(train, title, synapse=1):
+	"""
+	:param: train is a list (size pixel_x*pixel_x) that contains train for every pixel
+	:return: plot
+	"""
+	pixel_x = round(math.sqrt(len(train)))
+	fig, axs = plt.subplots(pixel_x, pixel_x)
+	train = train*synapse		# TODO: ovde resiti, napraviti tu jednu od 4 vrednosti u niz od 201
+	k = 0
+	for i in range(pixel_x):
+		for j in range(pixel_x):
+			axs[i, j].stem(train[k])
+			k += 1
+	fig.suptitle(f"Epoch: {title}")
+	plt.tight_layout()
+	plt.show()
+
 
 """
 if __name__  == '__main__':

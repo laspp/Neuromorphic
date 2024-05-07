@@ -20,7 +20,6 @@ def main(data_path=None, *other):
     train_net(data_path)
 
     # ovde pozvati klasifikacija
-    # neurone koje generise u train, da gemerise u drugi folder
 
 
 # Using the special variable

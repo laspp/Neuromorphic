@@ -14,7 +14,7 @@ import random
 from matplotlib import pyplot as plt
 import cv2
 from recep_field import rf
-from spike_train import encode
+from spike_train import encode, plot_trains
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
@@ -63,7 +63,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 				#print(pot)				# 28x28
 				#Generating spike train
 				train = np.array(encode(pot))	#784x201
-				#print(train)
+				#plot_trains(train, k)
 				#calculating threshold value for the image
 				var_threshold = threshold(train)
 
@@ -120,7 +120,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								for t1 in range(-2,par.t_back-1, -1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											# print "weight change by" + str(update(synapse[j][h], rl(t1)))
+											print("1: weight change by" + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 											
 
@@ -129,7 +129,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								for t1 in range(2,par.t_fore+1, 1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											# print "weight change by" + str(update(synapse[j][h], rl(t1)))
+											print("2: weight change by" + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 											
 				if(img_win):
@@ -138,8 +138,9 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
-
+	plot_trains(train, k)
 	pprint(np.shape(synapse))
+
 	#print(last_winners)
 
 	ttt = np.arange(0,len(pot_arrays[0]),1)
@@ -155,11 +156,13 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
 		plt.stem(synapse[i])
+		print(synapse[i])		# krajnje 4 vrednosti
 		if display_plots:
 			plt.show()
 		# TODO: dodati i ulaze
 		# TODO: proveriti sinapse za 2x2 i 5x5 i nacrtati na istoj slici sinapse i spajkove
-
+		plot_trains(train, "kraj", synapse[i])
+	plot_trains(train, "kraj", synapse)
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
@@ -178,7 +181,7 @@ def main(data_path=None, *other):
 		base_path = Path(__file__).parent.parent
 		print(base_path)
 		#data_path = Path(base_path, 'data', 'MNIST_0-5')
-		#data_path = Path(base_path, 'data', 'TOY_BINARY')
+		data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
 		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
 
