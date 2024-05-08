@@ -48,12 +48,14 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		for j in range(pixel_x*pixel_x):
 			#random.seed(1)
 			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
+			# TODO: napraviti poznate sinapse, fiksne izmedju 0 i 0.4
 
 
 
 	for k in range(par.epoch):
 		print("EPOCH", k,":")
 		last_winners = {}
+		all_trains = []
 		for file in os.listdir(train_data_dir):
 			if file.endswith('.png'):
 				image = cv2.imread(os.path.join(train_data_dir, file), 0)
@@ -63,7 +65,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 				#print(pot)				# 28x28
 				#Generating spike train
 				train = np.array(encode(pot))	#784x201
-				#plot_trains(train, k)
+				all_trains.append(train)
 				#calculating threshold value for the image
 				var_threshold = threshold(train)
 
@@ -138,8 +140,10 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
-	plot_trains(train, k)
-	pprint(np.shape(synapse))
+
+		for i in range(par.n):
+			#plot_trains(train, f"{k}, neuron {i}", synapse[i])
+			pass
 
 	#print(last_winners)
 
@@ -155,14 +159,20 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		plt.title("Neuron " + str(i))
 		plt.plot(ttt,Pth, 'r' )
 		plt.plot(ttt,pot_arrays[i])
-		plt.stem(synapse[i])
-		print(synapse[i])		# krajnje 4 vrednosti
 		if display_plots:
 			plt.show()
-		# TODO: dodati i ulaze
-		# TODO: proveriti sinapse za 2x2 i 5x5 i nacrtati na istoj slici sinapse i spajkove
-		plot_trains(train, "kraj", synapse[i])
-	plot_trains(train, "kraj", synapse)
+			# TODO: staviti sve na istu sliku
+		for item in all_trains:
+			print(f"All trains {np.shape(all_trains)}")
+			print(f"Item {np.shape(item)}")
+			#plot_trains(item, f"kraj, neuron {i}", synapse[i])
+		plot_trains(all_trains[0], f"kraj, 0.png, neuron {i}", synapse[i])
+		plot_trains(all_trains[1], f"kraj, 1.png, neuron {i}", synapse[i])
+		# sacuvati to u neki fajl
+		# HEAT MAP, 9 NEURONA, po sinapsama, po bojama
+	# moze animacija iz pocetnih sinapsi do kraaj svih epoha
+	# matplotlib animation
+
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
@@ -202,7 +212,3 @@ if __name__=="__main__":
 	main(*sys.argv[1:])
 
 # TODO: staviti fiksne tezine sinapsi pa da se spajkuju za odgovarajuce slike
-
-# TODO: neka posebna class img_size kojoj se ovde u main prosledi
-# data path. onda ona odredi velicinu i stavi u size
-# a klasa params koristi to kao pixel_x = img.size

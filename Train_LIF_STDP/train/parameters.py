@@ -83,6 +83,7 @@ class scaling_params:
 
 	# SDPT learning rule
 	#w_max = 1.5 * scale
+	# BITNO: wmin -1, wmax 1, bez apsolutnog, sigma 0.2, to je learning rate, Pmin = -10?
 	w_max = 0.2 * scale			# NOTE: na 0.0 je skroz belo
 	w_min = -1.2 * scale
 	sigma = 0.02
