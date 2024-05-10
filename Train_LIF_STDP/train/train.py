@@ -153,24 +153,36 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		Pth.append(layer2[0].Pth)
 
 	#plotting 
-	for i in range(par.n):
-		axes = plt.gca()
-		#axes.set_ylim([-20,50])
-		plt.title("Neuron " + str(i))
-		plt.plot(ttt,Pth, 'r' )
-		plt.plot(ttt,pot_arrays[i])
-		if display_plots:
-			plt.show()
-			# TODO: staviti sve na istu sliku
-		for item in all_trains:
-			print(f"All trains {np.shape(all_trains)}")
-			print(f"Item {np.shape(item)}")
-			#plot_trains(item, f"kraj, neuron {i}", synapse[i])
-		plot_trains(all_trains[0], f"kraj, 0.png, neuron {i}", synapse[i])
-		plot_trains(all_trains[1], f"kraj, 1.png, neuron {i}", synapse[i])
-		# sacuvati to u neki fajl
+	# for i in range(par.n):
+	# 	axes = plt.gca()
+	# 	#axes.set_ylim([-20,50])
+	# 	plt.title("Neuron " + str(i))
+	# 	plt.plot(ttt,Pth, 'r' )
+	# 	plt.plot(ttt,pot_arrays[i])
+
+	fig, axs = plt.subplots(3, 3)
+	k = 0
+	for i in range(3):
+		for j in range(3):
+			axs[i, j].set_title(f"Neuron {k}")
+			axs[i, j].plot(ttt, Pth, 'r')
+			axs[i, j].plot(ttt, pot_arrays[k])
+			k+=1
+
+
+	if display_plots:
+		plt.tight_layout()
+		plt.show()
+
+	for item in all_trains:
+		print(f"All trains {np.shape(all_trains)}")
+		print(f"Item {np.shape(item)}")
+		#plot_trains(item, f"kraj, neuron {i}", synapse[i])
+	#plot_trains(all_trains[0], f"kraj, 0.png, neuron {i}", synapse[i])
+	#plot_trains(all_trains[1], f"kraj, 1.png, neuron {i}", synapse[i])
+		# TODO: sacuvati to u neki fajl
 		# HEAT MAP, 9 NEURONA, po sinapsama, po bojama
-	# moze animacija iz pocetnih sinapsi do kraaj svih epoha
+	# moze animacija iz pocetnih sinapsi do kraja svih epoha
 	# matplotlib animation
 
 
