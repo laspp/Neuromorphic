@@ -60,11 +60,12 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 	inp_syns = []
 	eph_syns = []
+	total_syns = [] 	# (epoha, slika, neurona, piksela)
 	for k in range(par.epoch):
 		print("EPOCH", k,":")
 		last_winners = {}
 		all_trains = []
-
+		per_file = []
 		for file in os.listdir(train_data_dir):
 
 			if file.endswith('.png'):
@@ -151,10 +152,16 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
 				inp_syns.append(synapse)
+				per_file.append(synapse)
 
 		eph_syns.append(synapse)
+		total_syns.append(per_file)
 	print(f"Oblik inp sinapse posle svih epoha {np.shape(inp_syns)}")
 	print(f"Oblik eph sinapse posle svih epoha {np.shape(eph_syns)}")
+	print(f"Oblik per file posle svih epoha {np.shape(per_file)}")
+
+	print(f"Oblik total syns posle svih epoha {np.shape(total_syns)}")
+
 
 
 
