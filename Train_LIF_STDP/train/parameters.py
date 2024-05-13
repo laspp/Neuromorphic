@@ -86,7 +86,10 @@ class scaling_params:
 	# BITNO: wmin -1, wmax 1, bez apsolutnog, sigma 0.2, to je learning rate, Pmin = -10?
 	w_max = 0.2 * scale			# NOTE: na 0.0 je skroz belo
 	w_min = -1.2 * scale
+	#w_min = -1
+	#w_max = 1
 	sigma = 0.02
+	#sigma = 0.2
 	A_plus = 0.8  # time difference is positive i.e negative reinforcement
 	A_minus = 0.3  # 0.01 # time difference is negative i.e positive reinforcement
 	tau_plus = 10

@@ -24,6 +24,8 @@ def rl(t):
 def update(w, del_w):		# ovo nije bas ok za hardver
 	if del_w<0:
 		return w + par.sigma*del_w*(w-abs(par.w_min))*par.scale
+		#return w + par.sigma * del_w * (w - par.w_min) * par.scale
+
 	elif del_w>0:
 		return w + par.sigma*del_w*(par.w_max-w)*par.scale
 """

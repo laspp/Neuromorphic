@@ -9,6 +9,9 @@ from pprint import pprint
 #####################################################################################################################################
 
 import numpy as np
+import seaborn as seaborn
+
+from heatmaps import *
 from neuron import neuron
 import random
 from matplotlib import pyplot as plt
@@ -31,7 +34,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 	for i in range(par.n):
 		pot_arrays.append([])
 
-	#time series 
+	#time series
 	time = np.arange(1, par.T+1, 1)
 
 	layer2 = []
@@ -49,14 +52,21 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 			#random.seed(1)
 			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
 			# TODO: napraviti poznate sinapse, fiksne izmedju 0 i 0.4
+			#synapse[i][j] = j/10 + 0.1
 
+	pprint("Prvobitne sinapse")
+	pprint(synapse)
+	originalne_sinapse = synapse
 
-
+	inp_syns = []
+	eph_syns = []
 	for k in range(par.epoch):
 		print("EPOCH", k,":")
 		last_winners = {}
 		all_trains = []
+
 		for file in os.listdir(train_data_dir):
+
 			if file.endswith('.png'):
 				image = cv2.imread(os.path.join(train_data_dir, file), 0)
 				#Convolving image with receptive field
@@ -80,7 +90,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 				#flag for lateral inhibition
 				f_spike = 0
-				
+
 				img_win = None
 
 				active_pot = []
@@ -90,16 +100,16 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 				#Leaky integrate and fire neuron dynamics
 				for t in time:
 					for j, x in enumerate(layer2):
-						active = []	
+						active = []
 						if(x.t_rest<t):
 							x.P = x.P + np.dot(synapse[j], train[:,t])
 							if(x.P>par.Prest):
 								x.P -= par.D			#leak
 							active_pot[j] = x.P
-						
+
 						pot_arrays[j].append(x.P)
 
-					# Lateral Inhibition		
+					# Lateral Inhibition
 					if(f_spike==0):
 						high_pot = max(active_pot)
 						if(high_pot>var_threshold):
@@ -112,7 +122,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								if(s!=winner):
 									layer2[s].P = par.Pmin			#ugasi ostale
 
-					#Check for spikes and update weights				
+					#Check for spikes and update weights
 					for j,x in enumerate(layer2):
 						s = x.check()
 						if(s==1):
@@ -124,26 +134,31 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 										if train[h][t+t1] == 1:
 											print("1: weight change by" + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
-											
 
 
-							
+
+
 								for t1 in range(2,par.t_fore+1, 1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
 											print("2: weight change by" + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
-											
+
 				if(img_win):
 					for p in range(pixel_x*pixel_x):
 						if sum(train[p])==0:
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
+				inp_syns.append(synapse)
 
-		for i in range(par.n):
-			#plot_trains(train, f"{k}, neuron {i}", synapse[i])
-			pass
+		eph_syns.append(synapse)
+	print(f"Oblik inp sinapse posle svih epoha {np.shape(inp_syns)}")
+	print(f"Oblik eph sinapse posle svih epoha {np.shape(eph_syns)}")
+
+
+
+
 
 	#print(last_winners)
 
@@ -152,32 +167,25 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 	for i in range(len(ttt)):
 		Pth.append(layer2[0].Pth)
 
-	#plotting 
-	# for i in range(par.n):
-	# 	axes = plt.gca()
-	# 	#axes.set_ylim([-20,50])
-	# 	plt.title("Neuron " + str(i))
-	# 	plt.plot(ttt,Pth, 'r' )
-	# 	plt.plot(ttt,pot_arrays[i])
-
-	fig, axs = plt.subplots(3, 3)
-	k = 0
-	for i in range(3):
-		for j in range(3):
-			axs[i, j].set_title(f"Neuron {k}")
-			axs[i, j].plot(ttt, Pth, 'r')
-			axs[i, j].plot(ttt, pot_arrays[k])
-			k+=1
+	# plotting neuron active potentials
+	plotting_potentials(display_plots, ttt, Pth, pot_arrays)
 
 
+
+	seaborn.heatmap(synapse)
 	if display_plots:
-		plt.tight_layout()
+		plt.title("Svee")
 		plt.show()
 
+	synapse_heatmap(synapse, display_plots)
+
+
 	for item in all_trains:
-		print(f"All trains {np.shape(all_trains)}")
-		print(f"Item {np.shape(item)}")
+		#print(f"All trains {np.shape(all_trains)}")
+		#print(f"Item {np.shape(item)}")
+
 		#plot_trains(item, f"kraj, neuron {i}", synapse[i])
+		pass
 	#plot_trains(all_trains[0], f"kraj, 0.png, neuron {i}", synapse[i])
 	#plot_trains(all_trains[1], f"kraj, 1.png, neuron {i}", synapse[i])
 		# TODO: sacuvati to u neki fajl
@@ -186,17 +194,27 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 	# matplotlib animation
 
 
+
+
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
 		reconst_weights(synapse[i], i, pixel_x)
 
+	pprint(synapse)
+	if originalne_sinapse.all() == synapse.all():
+		print("Learned!")
+	else:
+		print("Haven't learned :(")
+
+	print(f"Finalni oblik sinapsi {np.shape(synapse)}")
+
 	return synapse, last_winners
 
-# Defining main function 
+# Defining main function
 def main(data_path=None, *other):
 	if other:
 		print(("Wrong number of arguments! {} given.\n"
-               "Run:  python train.py [path to train data]\n").format(len(other)))
+			   "Run:  python train.py [path to train data]\n").format(len(other)))
 		exit()
 	#Use default data set if no data given
 	if not data_path:
@@ -218,9 +236,9 @@ def main(data_path=None, *other):
 
 
 
-# Using the special variable  
+# Using the special variable
 # __name__ 
-if __name__=="__main__": 
+if __name__=="__main__":
 	main(*sys.argv[1:])
 
 # TODO: staviti fiksne tezine sinapsi pa da se spajkuju za odgovarajuce slike

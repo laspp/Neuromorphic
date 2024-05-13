@@ -61,7 +61,6 @@ def plot_trains(train, title, synapse=[1, 1, 1, 1]):
 	"""
 	pixel_x = round(math.sqrt(len(train)))
 	fig, axs = plt.subplots(pixel_x, pixel_x)
-	#train = train*synapse		# TODO: ovde resiti, napraviti tu jednu od 4 vrednosti u niz od 201
 	k = 0
 	for i in range(pixel_x):
 		for j in range(pixel_x):
