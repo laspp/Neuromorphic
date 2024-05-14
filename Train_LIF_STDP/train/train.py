@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 
 
-def train_net(train_data_dir, pixel_x, display_plots=True):
+def train_net(train_data_dir, pixel_x, display_plots=False):
 	#potentials of output neurons
 	pot_arrays = []
 	for i in range(par.n):
@@ -46,6 +46,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 	#synapse matrix	initialization
 	synapse = np.zeros((par.n, pixel_x*pixel_x))
+	print(type(synapse))
 
 	for i in range(par.n):
 		for j in range(pixel_x*pixel_x):
@@ -56,17 +57,20 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 	pprint("Prvobitne sinapse")
 	pprint(synapse)
-	originalne_sinapse = synapse
 
-	inp_syns = []
-	eph_syns = []
-	total_syns = [] 	# (epoha, slika, neurona, piksela)
+
+	per_file = np.zeros((2, par.n, pixel_x*pixel_x))
+	total_syns = np.zeros((par.epoch, 2, par.n, pixel_x*pixel_x))
+	print(f"Oblik per file {np.shape(per_file)}")
+	print(f"Oblik total syns {np.shape(total_syns)}")
+
+	# (epoha, slika, neurona, piksela)
 	for k in range(par.epoch):
 		print("EPOCH", k,":")
 		last_winners = {}
 		all_trains = []
-		per_file = []
-		for file in os.listdir(train_data_dir):
+		per_file = np.zeros((2, par.n, pixel_x*pixel_x))
+		for i, file in enumerate(os.listdir(train_data_dir)):
 
 			if file.endswith('.png'):
 				image = cv2.imread(os.path.join(train_data_dir, file), 0)
@@ -151,17 +155,16 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 							synapse[img_win][p] -= par.syn_winner*par.scale			# da u sl iteraciji i drugi mogu da pobede
 							if(synapse[img_win][p]<par.w_min):
 								synapse[img_win][p] = par.w_min
-				inp_syns.append(synapse)
-				per_file.append(synapse)
+				per_file[i] = synapse
 
-		eph_syns.append(synapse)
-		total_syns.append(per_file)
-	print(f"Oblik inp sinapse posle svih epoha {np.shape(inp_syns)}")
-	print(f"Oblik eph sinapse posle svih epoha {np.shape(eph_syns)}")
+
+		total_syns[k] = per_file
+
 	print(f"Oblik per file posle svih epoha {np.shape(per_file)}")
-
 	print(f"Oblik total syns posle svih epoha {np.shape(total_syns)}")
+	pprint(total_syns)
 
+	animate_learning(total_syns)
 
 
 
@@ -175,7 +178,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		Pth.append(layer2[0].Pth)
 
 	# plotting neuron active potentials
-	plotting_potentials(display_plots, ttt, Pth, pot_arrays)
+	#plotting_potentials(display_plots, ttt, Pth, pot_arrays)
 
 
 
@@ -207,13 +210,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 	for i in range(par.n):
 		reconst_weights(synapse[i], i, pixel_x)
 
-	pprint(synapse)
-	if originalne_sinapse.all() == synapse.all():
-		print("Learned!")
-	else:
-		print("Haven't learned :(")
 
-	print(f"Finalni oblik sinapsi {np.shape(synapse)}")
 
 	return synapse, last_winners
 
