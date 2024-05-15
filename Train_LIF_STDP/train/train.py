@@ -17,7 +17,7 @@ import random
 from matplotlib import pyplot as plt
 import cv2
 from recep_field import rf
-from spike_train import encode, plot_trains
+from spike_train import encode
 from rl import rl
 from rl import update
 from reconstruct import reconst_weights
@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 
 
-def train_net(train_data_dir, pixel_x, display_plots=False):
+def train_net(train_data_dir, pixel_x, display_plots=True):
 	#potentials of output neurons
 	pot_arrays = []
 	for i in range(par.n):
@@ -57,7 +57,6 @@ def train_net(train_data_dir, pixel_x, display_plots=False):
 
 	pprint("Prvobitne sinapse")
 	pprint(synapse)
-
 
 	per_file = np.zeros((2, par.n, pixel_x*pixel_x))
 	total_syns = np.zeros((par.epoch, 2, par.n, pixel_x*pixel_x))
@@ -117,7 +116,7 @@ def train_net(train_data_dir, pixel_x, display_plots=False):
 					# Lateral Inhibition
 					if(f_spike==0):
 						high_pot = max(active_pot)
-						if(high_pot>var_threshold):
+						if (high_pot > var_threshold):
 							f_spike = 1
 							winner = np.argmax(active_pot)
 							img_win = winner
@@ -164,11 +163,8 @@ def train_net(train_data_dir, pixel_x, display_plots=False):
 	print(f"Oblik total syns posle svih epoha {np.shape(total_syns)}")
 	pprint(total_syns)
 
-	animate_learning(total_syns)
 
-
-
-
+	#update_anim(total_syns.shape[0]*total_syns.shape[2], total_syns)
 
 	#print(last_winners)
 
@@ -178,33 +174,25 @@ def train_net(train_data_dir, pixel_x, display_plots=False):
 		Pth.append(layer2[0].Pth)
 
 	# plotting neuron active potentials
-	#plotting_potentials(display_plots, ttt, Pth, pot_arrays)
 
+	plotting_potentials(display_plots, ttt, Pth, pot_arrays)
 
-
-	seaborn.heatmap(synapse)
+	animate_learning(total_syns)
+	plt.clf()
 	if display_plots:
-		plt.title("Svee")
+		seaborn.heatmap(synapse, cmap='Grays')
+		plt.title("Final synapses values per neurons")
+		plt.xlabel("Neurons")
+		plt.ylabel("Synapses")
 		plt.show()
 
-	synapse_heatmap(synapse, display_plots)
 
+	for i, item in enumerate(all_trains):
+		plot_trains(item, i)
 
-	for item in all_trains:
-		#print(f"All trains {np.shape(all_trains)}")
-		#print(f"Item {np.shape(item)}")
-
-		#plot_trains(item, f"kraj, neuron {i}", synapse[i])
-		pass
-	#plot_trains(all_trains[0], f"kraj, 0.png, neuron {i}", synapse[i])
-	#plot_trains(all_trains[1], f"kraj, 1.png, neuron {i}", synapse[i])
+		#plot_trains(all_trains[0], f"kraj, 0.png, neuron {0}", synapse[0])
+		#plot_trains(all_trains[1], f"kraj, 1.png, neuron {1}", synapse[1])
 		# TODO: sacuvati to u neki fajl
-		# HEAT MAP, 9 NEURONA, po sinapsama, po bojama
-	# moze animacija iz pocetnih sinapsi do kraja svih epoha
-	# matplotlib animation
-
-
-
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):

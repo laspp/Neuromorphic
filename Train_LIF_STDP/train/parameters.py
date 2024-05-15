@@ -79,7 +79,7 @@ class scaling_params:
 	t_back = -20
 	t_fore = 20
 
-	n = 3  # Number of neurons in second layer
+	n = 9  # Number of neurons in second layer
 
 	# SDPT learning rule
 	#w_max = 1.5 * scale
@@ -95,7 +95,7 @@ class scaling_params:
 	tau_plus = 10
 	tau_minus = 10
 
-	epoch = 5
+	epoch = 20
 
 	# receptive field
 	sca1 = 0.625
