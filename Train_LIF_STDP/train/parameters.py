@@ -79,7 +79,7 @@ class scaling_params:
 	t_back = -20
 	t_fore = 20
 
-	n = 9  # Number of neurons in second layer
+	n = 4  # Number of neurons in second layer
 
 	# SDPT learning rule
 	#w_max = 1.5 * scale

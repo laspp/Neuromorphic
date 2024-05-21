@@ -46,7 +46,6 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 	#synapse matrix	initialization
 	synapse = np.zeros((par.n, pixel_x*pixel_x))
-	print(type(synapse))
 
 	for i in range(par.n):
 		for j in range(pixel_x*pixel_x):
@@ -55,22 +54,26 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 			# TODO: napraviti poznate sinapse, fiksne izmedju 0 i 0.4
 			#synapse[i][j] = j/10 + 0.1
 
-	pprint("Prvobitne sinapse")
-	pprint(synapse)
-
-	per_file = np.zeros((2, par.n, pixel_x*pixel_x))
-	total_syns = np.zeros((par.epoch, 2, par.n, pixel_x*pixel_x))
+	files = len([item for item in os.listdir(train_data_dir) if item.endswith('.png')])
+	per_file = np.zeros((files, par.n, pixel_x*pixel_x))
+	total_syns = np.zeros((par.epoch, files, par.n, pixel_x*pixel_x))
 	print(f"Oblik per file {np.shape(per_file)}")
 	print(f"Oblik total syns {np.shape(total_syns)}")
 
+	spikes_list = np.zeros(files * par.T * par.epoch)
+	all_spikes_list = np.zeros((par.n, files * par.T * par.epoch))
+	print("Spikes list shape", np.shape(spikes_list))
+	print("All spikes list shape", np.shape(all_spikes_list))
+	s_iter = 0 		# for iteration through spikes_list
+
 	# (epoha, slika, neurona, piksela)
 	for k in range(par.epoch):
-		print("EPOCH", k,":")
+		print(f"EPOCH {k}:")
 		last_winners = {}
 		all_trains = []
-		per_file = np.zeros((2, par.n, pixel_x*pixel_x))
-		for i, file in enumerate(os.listdir(train_data_dir)):
+		per_file = np.zeros((files, par.n, pixel_x*pixel_x))
 
+		for i, file in enumerate(os.listdir(train_data_dir)):
 			if file.endswith('.png'):
 				image = cv2.imread(os.path.join(train_data_dir, file), 0)
 				#Convolving image with receptive field
@@ -103,6 +106,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 				#Leaky integrate and fire neuron dynamics
 				for t in time:
+
 					for j, x in enumerate(layer2):
 						active = []
 						if(x.t_rest<t):
@@ -130,13 +134,14 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 					for j,x in enumerate(layer2):
 						s = x.check()
 						if(s==1):
+							all_spikes_list[j, s_iter] = 1
 							x.t_rest = t + x.t_ref
 							x.P = par.Prest
 							for h in range(pixel_x*pixel_x):
 								for t1 in range(-2,par.t_back-1, -1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											print("1: weight change by" + str(update(synapse[j][h], rl(t1))))
+											print("1: weight change by " + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 
 
@@ -145,9 +150,10 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								for t1 in range(2,par.t_fore+1, 1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											print("2: weight change by" + str(update(synapse[j][h], rl(t1))))
+											print("2: weight change by " + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 
+					s_iter += 1
 				if(img_win):
 					for p in range(pixel_x*pixel_x):
 						if sum(train[p])==0:
@@ -161,14 +167,15 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 
 	print(f"Oblik per file posle svih epoha {np.shape(per_file)}")
 	print(f"Oblik total syns posle svih epoha {np.shape(total_syns)}")
-	pprint(total_syns)
+	pprint(f"Spikes list {all_spikes_list}")
 
 
 	#update_anim(total_syns.shape[0]*total_syns.shape[2], total_syns)
 
 	#print(last_winners)
-
+	print("Pot arrays shape", np.shape(pot_arrays))
 	ttt = np.arange(0,len(pot_arrays[0]),1)
+	print(f"Oblik ttt {np.shape(ttt)}")
 	Pth = []
 	for i in range(len(ttt)):
 		Pth.append(layer2[0].Pth)
@@ -176,19 +183,21 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 	# plotting neuron active potentials
 
 	plotting_potentials(display_plots, ttt, Pth, pot_arrays)
+	plotting_potentials_and_spikes(display_plots, ttt, Pth, pot_arrays, all_spikes_list)
 
-	animate_learning(total_syns)
+
+	animate_learning(total_syns, display_plots)
 	plt.clf()
 	if display_plots:
 		seaborn.heatmap(synapse, cmap='Grays')
 		plt.title("Final synapses values per neurons")
-		plt.xlabel("Neurons")
-		plt.ylabel("Synapses")
+		plt.xlabel("Synapses")
+		plt.ylabel("Neurons")
 		plt.show()
 
 
 	for i, item in enumerate(all_trains):
-		plot_trains(item, i)
+		plot_trains(item, i, display_plots)
 
 		#plot_trains(all_trains[0], f"kraj, 0.png, neuron {0}", synapse[0])
 		#plot_trains(all_trains[1], f"kraj, 1.png, neuron {1}", synapse[1])
