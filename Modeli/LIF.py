@@ -77,15 +77,20 @@ def generate_delta(no, range_t):
     :return: delta impulse, array
     """
     I_delta = np.zeros(len(range_t))            # array of 0
+    # for i in range(0, no):
+    #     rand_idex = random.randint(0, len(range_t) - 1)
+    #     I_delta[rand_idex] = random.randint(2000, 50000)
+    no = 30
     for i in range(0, no):
-        rand_idex = random.randint(0, len(range_t) - 1)
-        I_delta[rand_idex] = random.randint(2000, 50000)
+        distance = int(len(range_t)/no)
+        print(distance)
+        I_delta[distance*i] = 9000
 
-    I_delta[100] = 5000
-    I_delta[150] = 5000
-    I_delta[200] = 5000
-    I_delta[250] = 5000
-    I_delta[2000] = 5000
+    # I_delta[100] = 5000
+    # I_delta[150] = 5000
+    # I_delta[200] = 5000
+    # I_delta[250] = 5000
+    # I_delta[2000] = 5000
 
     return I_delta
 

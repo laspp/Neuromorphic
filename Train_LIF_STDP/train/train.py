@@ -51,7 +51,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		for j in range(pixel_x*pixel_x):
 			#random.seed(1)
 			synapse[i][j] = random.uniform(0, par.syn_matrix*par.scale)
-			# TODO: napraviti poznate sinapse, fiksne izmedju 0 i 0.4
+			# napraviti poznate sinapse, fiksne izmedju 0 i 0.4
 			#synapse[i][j] = j/10 + 0.1
 
 	files = len([item for item in os.listdir(train_data_dir) if item.endswith('.png')])
@@ -141,7 +141,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								for t1 in range(-2,par.t_back-1, -1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											print("1: weight change by " + str(update(synapse[j][h], rl(t1))))
+											#print("1: weight change by " + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 
 
@@ -150,7 +150,7 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 								for t1 in range(2,par.t_fore+1, 1):
 									if 0<=t+t1<par.T+1:
 										if train[h][t+t1] == 1:
-											print("2: weight change by " + str(update(synapse[j][h], rl(t1))))
+											#print("2: weight change by " + str(update(synapse[j][h], rl(t1))))
 											synapse[j][h] = update(synapse[j][h], rl(t1))
 
 					s_iter += 1
@@ -196,12 +196,12 @@ def train_net(train_data_dir, pixel_x, display_plots=True):
 		plt.show()
 
 
-	for i, item in enumerate(all_trains):
-		plot_trains(item, i, display_plots)
+	#for i, item in enumerate(all_trains):
+		#plot_trains(item, i, display_plots)
 
 		#plot_trains(all_trains[0], f"kraj, 0.png, neuron {0}", synapse[0])
 		#plot_trains(all_trains[1], f"kraj, 1.png, neuron {1}", synapse[1])
-		# TODO: sacuvati to u neki fajl
+
 
 	#Reconstructing weights to analyse training
 	for i in range(par.n):
@@ -221,8 +221,8 @@ def main(data_path=None, *other):
 	if not data_path:
 		base_path = Path(__file__).parent.parent
 		print(base_path)
-		#data_path = Path(base_path, 'data', 'MNIST_0-5')
-		data_path = Path(base_path, 'data', 'TOY_BINARY')
+		data_path = Path(base_path, 'data', 'MNIST_0-5')
+		#data_path = Path(base_path, 'data', 'TOY_BINARY')
 		#data_path = Path(base_path, 'data', 'BINARY_14')
 		#data_path = Path(base_path, 'data', 'MNIST_TRAIN')
 

@@ -107,7 +107,8 @@ def update_anim(frame, total_syns):
     num_epochs = total_syns.shape[0]
     current_neuron = frame // num_epochs
     current_epoch = frame % num_epochs
-    heatmap = plt.imshow(total_syns[current_epoch, ::2, current_neuron, :].reshape((2, 2)), cmap='Purples',
+    pixel_x = int(math.sqrt(num_synapses))
+    heatmap = plt.imshow(total_syns[current_epoch, ::num_inputs, current_neuron, :].reshape((pixel_x, pixel_x)), cmap='gray',
                          interpolation='nearest')
     plt.title(f"Epoch: {current_epoch}, Neuron {current_neuron}")
     plt.colorbar(heatmap)
